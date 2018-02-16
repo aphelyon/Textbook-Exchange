@@ -6,4 +6,4 @@ models:
       - .:/app
     ports:
       - "8001:8000"
-    command: bash -c "mod_wsgi-express start-server --working-directory /app/microservices --reload-on-changes /app/microservices/microservices/wsgi.py"
+    command: bash -c "mod_wsgi-express start-server --working-directory /app/textbookexchange --reload-on-changes /app/textbookexchange/textbookexchange/wsgi.py"
