@@ -12,6 +12,9 @@ class Professor(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
 
+    def as_json(self):
+        return dict(name=self.name, email=self.email)
+
 class Course(models.Model):
     identifier = models.CharField(max_length=32)
     department = models.CharField(max_length=100)
