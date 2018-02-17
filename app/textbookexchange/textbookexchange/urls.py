@@ -20,6 +20,6 @@ from myapp import views
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include('myapp.urls', namespace="myapp")),
 ]
-urlpatterns += [url(r'^api/', include('myapp.urls'))]
