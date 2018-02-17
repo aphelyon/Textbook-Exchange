@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -8,18 +9,21 @@ class User(models.Model):
     email = models.EmailField(max_length=100)
     userJoined = models.DateTimeField('User joined on this date')
 
+
 class Professor(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
 
     def as_json(self):
-        return dict(name=self.name, email=self.email)
+        return dict(name=self.name, email=self.email, pk=self.pk)
+
 
 class Course(models.Model):
     identifier = models.CharField(max_length=32)
     department = models.CharField(max_length=100)
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+
 
 class Textbook(models.Model):
     item_title = models.CharField(max_length=200)
