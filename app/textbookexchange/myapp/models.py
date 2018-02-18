@@ -12,10 +12,13 @@ class User(models.Model):
 
 class Professor(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, null=True)
 
     def as_json(self):
-        return dict(name=self.name, email=self.email, pk=self.pk)
+        if self.email is not None:
+            return dict(name=self.name, email=self.email, pk=str(self.pk))
+        else:
+            return dict(name=self.name, pk=str(self.pk))
 
 
 class Course(models.Model):
@@ -28,9 +31,19 @@ class Course(models.Model):
 class Textbook(models.Model):
     item_title = models.CharField(max_length=200)
     item_author = models.CharField(max_length=200)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     item_ISBN = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
+
+    """Return a dictionary containing each component of the model with its respective label"""
+    def as_json(self):
+        if self.course is not None:
+            return dict(title=self.item_title, author=self.item_author, course=self.course, ISBN=self.item_ISBN,
+                        pub_date=str(self.pub_date), pk=str(self.pk))
+        else:
+            return dict(title=self.item_title, author=self.item_author, ISBN=self.item_ISBN, pub_date=str(self.pub_date),
+                        pk=str(self.pk))
+
     
 
 class Listing(models.Model):
