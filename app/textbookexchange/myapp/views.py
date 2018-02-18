@@ -6,19 +6,87 @@ from django.template import RequestContext
 from django.core import serializers
 from django.views.decorators.http import require_POST
 import json
+import datetime
 from django.core.exceptions import ValidationError
 
 # Create your views here.
 
 
 def details_user(request, pk):
-    pass
+    try:
+        user = User.objects.get(pk=pk)
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body.decode('utf-8'))
+                try:
+                    user.first_name = data['first_name']
+                except KeyError:
+                    print("first_name not sent in JSON POST request")
+                try:
+                    user.last_name = data['last_name']
+                except KeyError:
+                    print("last_name not sent in JSON POST request")
+                try:
+                    user.username = data['username']
+                except KeyError:
+                    print("username not sent in JSON POST request")
+                try:
+                    user.password = data['password']
+                except KeyError:
+                    print("password not sent in JSON POST request")
+                try:
+                    user.email = data['email']
+                except KeyError:
+                    print("email not sent in JSON POST request")
+                user.save()
+            except ValueError:  # Means that JSON was not a part of the request
+                return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
+                                    content_type='application/json')
+        response = {"status": "200", "user": user.as_json()}
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    except User.DoesNotExist:
+        return HttpResponse(json.dumps({"Error": "Requested User object does not exist"}),
+                            content_type='application/json')
+
 
 
 @require_POST
 def create_user(request):
-    pass
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        try:
+            first_name = data['first_name']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field first_name was not supplied"}),
+                                content_type='application/json')
+        try:
+            last_name = data['last_name']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field last_name was not supplied"}),
+                                content_type='application/json')
+        try:
+            username = data['username']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field username was not supplied"}),
+                                content_type='application/json')
+        try:
+            password = data['password']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field password was not supplied"}),
+                                content_type='application/json')
+        try:
+            email = data['email']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field email was not supplied"}),
+                                content_type='application/json')
+        new_user = User.objects.create(first_name=first_name, last_name=last_name, username=username, password=password,
+                                       email=email, userJoined=datetime.date.today())
+        response = {"status": "200", "User": new_user.as_json()}
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
+    except ValueError:  # Means that JSON was not a part of the request
+        return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
+                            content_type='application/json')
 
 @require_POST
 def delete_user(request, pk):

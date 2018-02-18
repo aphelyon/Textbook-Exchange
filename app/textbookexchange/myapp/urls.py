@@ -4,6 +4,8 @@ from myapp import views
 urlpatterns = []
 
 urlpatterns += [
+    url(r'^v1/users/create$', views.create_user, name='create-user-api'),  # Keep this on top, please
+    url(r'^v1/users/(?P<pk>[-\w]+)$', views.details_user, name='get-user-api'),
     url(r'^v1/users/(?P<pk>[-\w]+)/delete$', views.delete_user, name='delete-user-api'),
 ]
 
