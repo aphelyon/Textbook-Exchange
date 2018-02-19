@@ -166,7 +166,7 @@ def delete_professor(request, pk):
 
 def details_course(request, pk):
     try:
-        retrieved_courses = Courses.objects.get(pk=pk)
+        retrieved_courses = Course.objects.get(pk=pk)
         if request.method == "POST":
 
             try:
@@ -187,7 +187,7 @@ def details_course(request, pk):
                     return HttpResponse(json.dumps({"Error": ""}),
                                         content_type='application/json')
                 try:
-                    retrieved_textbook.course = Course.objects.get(data['course_key'])
+                    retrieved_courses.course = Course.objects.get(data['course_key'])
                 except KeyError:
                     print("Course key was not sent in JSON request")
                 except Course.DoesNotExist:
@@ -203,7 +203,7 @@ def details_course(request, pk):
         response = {"status": "200", "textbook": retrieved_courses.as_json()}
         return HttpResponse(json.dumps(response), content_type='application/json')
 
-    except Courses.DoesNotExist:
+    except Course.DoesNotExist:
         return HttpResponse(json.dumps({"Error": "Requested Course object does not exist"}),
                             content_type='application/json')
 
@@ -239,15 +239,15 @@ def create_course(request):
                                 content_type='application/json')
         try:
             if professor_exists:
-                new_course = Course.objects.create(identifier = identifier, department=department,
-                                                   name = name, professor=professor)
+                new_course = Course.objects.create(identifier=identifier, department=department,
+                                                   name=name, professor=professor)
             else:
-                new_course = Course.objects.create(identifier = identifier, department=department,
-                                                   name = name)
+                new_course = Course.objects.create(identifier=identifier, department=department,
+                                                   name=name)
         except ValidationError:
             return HttpResponse(json.dumps({"Error": "Something went wrong"}),
                                 content_type='application/json')
-        response = {"status": "200", "new_course" : new_course.as_json()}
+        response = {"status": "200", "new_course": new_course.as_json()}
         return HttpResponse(json.dumps(response), content_type='application/json')  # Everything is a-ok
 
     except ValueError:  # Means that JSON was not a part of the request
