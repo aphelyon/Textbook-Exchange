@@ -32,6 +32,12 @@ class Course(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
 
+    def as_json(self):
+        if self.professor is not None:
+            return dict(identifier=self.identifier, department=self.department, professor=self.professor.as_json(), name=self.name, pk=str(self.pk))
+        else:
+            return dict(identifier=self.identifier, department=self.department, name=self.name, pk=str(self.pk))
+
 
 class Textbook(models.Model):
     item_title = models.CharField(max_length=200)
@@ -43,7 +49,7 @@ class Textbook(models.Model):
     """Return a dictionary containing each component of the model with its respective label"""
     def as_json(self):
         if self.course is not None:
-            return dict(title=self.item_title, author=self.item_author, course=self.course, ISBN=self.item_ISBN,
+            return dict(title=self.item_title, author=self.item_author, course=self.course.as_json(), ISBN=self.item_ISBN,
                         pub_date=str(self.pub_date), pk=str(self.pk))
         else:
             return dict(title=self.item_title, author=self.item_author, ISBN=self.item_ISBN, pub_date=str(self.pub_date),
