@@ -29,7 +29,7 @@ class Professor(models.Model):
 class Course(models.Model):
     identifier = models.CharField(max_length=32)
     department = models.CharField(max_length=100)
-    professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
 
 

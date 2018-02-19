@@ -10,7 +10,9 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r'^v1/courses/(?P<pk>[-\w]+)/delete$', views.delete_user, name='delete-course-api'),
+    url(r'^v1/courses/create$', views.create_course, name='create-new-course-api'),  # Keep this on top, please
+    url(r'^v1/courses/(?P<pk>[-\w]+)$', views.details_course, name='get-course-api'),
+    url(r'^v1/courses/(?P<pk>[-\w]+)/delete$', views.delete_course, name='delete-course-api'),
 ]
 
 urlpatterns += [

@@ -1,0 +1,5 @@
+
+*.pyc
+app/textbookexchange/myapp/migrations/0001_initial.py
+app/textbookexchange/myapp/migrations/0002_auto_20180219_0042.py
+app/textbookexchange/myapp/migrations/__init__.py

@@ -165,12 +165,94 @@ def delete_professor(request, pk):
 
 
 def details_course(request, pk):
-    pass
+    try:
+        retrieved_courses = Courses.objects.get(pk=pk)
+        if request.method == "POST":
+
+            try:
+                data = json.loads(request.body.decode('utf-8'))
+                try:
+                    retrieved_courses.identifier = data['identifier']
+                except KeyError:
+                    print("identifier was not sent in JSON request")
+                try:
+                    retrieved_courses.department = data['department']
+                except KeyError:
+                    print("department was not sent in JSON request")
+                try:
+                    retrieved_courses.name = data['name']
+                except KeyError:
+                    print("course_name was not sent in JSON request")
+                except ValidationError:
+                    return HttpResponse(json.dumps({"Error": ""}),
+                                        content_type='application/json')
+                try:
+                    retrieved_textbook.course = Course.objects.get(data['course_key'])
+                except KeyError:
+                    print("Course key was not sent in JSON request")
+                except Course.DoesNotExist:
+                    return HttpResponse(json.dumps({"Error": "Requested Course object does not exist"}),
+                                        content_type='application/json')
+
+                retrieved_courses.save()
+
+            except ValueError:  # Means that JSON was not a part of the request
+                return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
+                                    content_type='application/json')
+
+        response = {"status": "200", "textbook": retrieved_courses.as_json()}
+        return HttpResponse(json.dumps(response), content_type='application/json')
+
+    except Courses.DoesNotExist:
+        return HttpResponse(json.dumps({"Error": "Requested Course object does not exist"}),
+                            content_type='application/json')
 
 
 @require_POST
 def create_course(request):
-    pass
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        professor_exists = False
+        try:
+            identifier = data['identifier']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field identifier was not supplied"}),
+                                content_type='application/json')
+        try:
+            department = data['department']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field department was not supplied"}),
+                                content_type='application/json')
+        try:
+            name = data['name']
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field name was not supplied"}),
+                                content_type='application/json')
+
+        try:
+            professor = Professor.objects.get(pk=data['professor_key'])
+            professor_exists = True
+        except KeyError:
+            pass  # This is fine, since course is not required
+        except Professor.DoesNotExist:
+            return HttpResponse(json.dumps({"Error": "Requested Professor object does not exist"}),
+                                content_type='application/json')
+        try:
+            if professor_exists:
+                new_course = Course.objects.create(identifier = identifier, department=department,
+                                                   name = name, professor=professor)
+            else:
+                new_course = Course.objects.create(identifier = identifier, department=department,
+                                                   name = name)
+        except ValidationError:
+            return HttpResponse(json.dumps({"Error": "Something went wrong"}),
+                                content_type='application/json')
+        response = {"status": "200", "new_course" : new_course.as_json()}
+        return HttpResponse(json.dumps(response), content_type='application/json')  # Everything is a-ok
+
+    except ValueError:  # Means that JSON was not a part of the request
+        return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
+                            content_type='application/json')
 
 
 @require_POST
