@@ -7,6 +7,7 @@ from django.core import serializers
 from django.views.decorators.http import require_POST
 import json
 import datetime
+from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 # Create your views here.
@@ -21,7 +22,7 @@ def details_user(request, pk):
                 try:
                     user.first_name = data['first_name']
                 except KeyError:
-                    print("first_name not sent in JSON POST request")
+                    print("first_name not sent in JSON POST request")  # This is not an error, we just don't do anything
                 try:
                     user.last_name = data['last_name']
                 except KeyError:
@@ -30,6 +31,9 @@ def details_user(request, pk):
                     user.username = data['username']
                 except KeyError:
                     print("username not sent in JSON POST request")
+                except IntegrityError:
+                    return HttpResponse(json.dumps({"Error": "Username provided is already in use"}),
+                                        content_type='application/json')
                 try:
                     user.password = data['password']
                 except KeyError:
@@ -38,6 +42,9 @@ def details_user(request, pk):
                     user.email = data['email']
                 except KeyError:
                     print("email not sent in JSON POST request")
+                except IntegrityError:
+                    return HttpResponse(json.dumps({"Error": "Email provided is already in use"}),
+                                        content_type='application/json')
                 user.save()
             except ValueError:  # Means that JSON was not a part of the request
                 return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
@@ -47,7 +54,6 @@ def details_user(request, pk):
     except User.DoesNotExist:
         return HttpResponse(json.dumps({"Error": "Requested User object does not exist"}),
                             content_type='application/json')
-
 
 
 @require_POST
@@ -79,14 +85,22 @@ def create_user(request):
         except KeyError:
             return HttpResponse(json.dumps({"Error": "Required field email was not supplied"}),
                                 content_type='application/json')
-        new_user = User.objects.create(first_name=first_name, last_name=last_name, username=username, password=password,
-                                       email=email, userJoined=datetime.date.today())
+        except IntegrityError:
+            return HttpResponse(json.dumps({"Error": "Email provided is already in use"}),
+                                content_type='application/json')
+        try:
+            new_user = User.objects.create(first_name=first_name, last_name=last_name, username=username, password=password,
+                                           email=email, userJoined=datetime.date.today())
+        except IntegrityError as e:
+            return HttpResponse(json.dumps({"Error": str(e)}),
+                                content_type='application/json')
         response = {"status": "200", "User": new_user.as_json()}
         return HttpResponse(json.dumps(response), content_type='application/json')
 
     except ValueError:  # Means that JSON was not a part of the request
         return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
                             content_type='application/json')
+
 
 @require_POST
 def delete_user(request, pk):
@@ -357,7 +371,7 @@ def create_textbook(request):
             return HttpResponse(json.dumps({"Error": "pub_date not in required format YYYY-MM-DD"}),
                                 content_type='application/json')
 
-        response = {"status": "200", "new_textbook" : new_textbook.as_json()}
+        response = {"status": "200", "new_textbook": new_textbook.as_json()}
         return HttpResponse(json.dumps(response), content_type='application/json')  # Everything is a-ok
 
     except ValueError:  # Means that JSON was not a part of the request
@@ -375,13 +389,120 @@ def delete_textbook(request, pk):
                             content_type='application/json')
 
 
+# We do not allow the listing's user to be changed, since a textbook listing will be posted by one user
 def details_listing(request, pk):
-    pass
+    try:
+        retrieved_listing = Listing.objects.get(pk=pk)
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body.decode('utf-8'))
+                try:
+                    retrieved_listing.item = Textbook.objects.get(pk=data['textbook_key'])
+                except KeyError:
+                    print("Textbook Key not sent")
+                except Textbook.DoesNotExist:
+                    return HttpResponse(json.dumps({"Error": "Requested Textbook object does not exist"}),
+                                        content_type='application/json')
+                try:
+                    retrieved_listing.price_text = data['price']
+                    retrieved_listing.actualprice = float(str(data['price']).replace(",", ""))
+                except KeyError:
+                    print("Price not sent")
+                except ValueError:
+                    return HttpResponse(json.dumps({"Error": "Price cannot be converted to a float"}),
+                                        content_type='application/json')
+                try:
+                    # If the sent condition is a valid choice, set it, otherwise, don't
+                    if data['condition'] in [item[0] for item in retrieved_listing.condition_of_textbook]:
+                        retrieved_listing.condition = data['condition']
+                    else:
+                        condition_error = "Condition provided is not in list: " + str(retrieved_listing.condition_of_textbook)
+                        return HttpResponse(json.dumps({"Error": condition_error}),
+                                            content_type='application/json')
+                except KeyError:
+                    print("Textbook condition not sent")
+
+                try:
+                    # If the sent status is a valid choice, set it, otherwise, don't
+                    if data['status'] in [item[0] for item in retrieved_listing.status_of_listing]:
+                        retrieved_listing.status = data['status']
+                    else:
+                        status_error = "Status provided is not in list: " + str(retrieved_listing.status_of_listing)
+                        return HttpResponse(json.dumps({"Error": status_error}),
+                                            content_type='application/json')
+                except KeyError:
+                    print("Listing status not sent")
+
+                retrieved_listing.save()
+            except ValueError:
+                return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
+                                    content_type='application/json')
+        response = {"status": "200", "listing": retrieved_listing.as_json()}
+        return HttpResponse(json.dumps(response), content_type='application/json')
+
+    except Listing.DoesNotExist:
+        return HttpResponse(json.dumps({"Error": "Requested Listing object does not exist"}),
+                            content_type='application/json')
 
 
 @require_POST
 def create_listing(request):
-    pass
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        # We use this to handle our 3 cases all-in-one when a status isn't sent, a condition isn't sent, or both aren't
+        argument_dictionary = {}
+        try:
+            argument_dictionary['item'] = Textbook.objects.get(pk=data['textbook_key'])
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field textbook_key was not supplied"}),
+                                content_type='application/json')
+        except Textbook.DoesNotExist:
+            return HttpResponse(json.dumps({"Error": "Requested Textbook object does not exist"}),
+                                content_type='application/json')
+        try:
+            argument_dictionary['price_text'] = data['price']
+            argument_dictionary['actualprice'] = float(str(data['price']).replace(",", ""))
+        except ValueError:
+            return HttpResponse(json.dumps({"Error": "Price cannot be converted to a float"}),
+                                content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field price was not supplied"}),
+                                content_type='application/json')
+        try:
+            argument_dictionary['user'] = User.objects.get(pk=data['user_key'])
+        except KeyError:
+            return HttpResponse(json.dumps({"Error": "Required field user_key was not supplied"}),
+                                content_type='application/json')
+        except User.DoesNotExist:
+            return HttpResponse(json.dumps({"Error": "Requested User object does not exist"}),
+                                content_type='application/json')
+        try:
+            if data['condition'] in [item[0] for item in Listing.condition_of_textbook]:
+                argument_dictionary['condition'] = data['condition']
+            else:
+                condition_error = "Condition provided is not in list: " + str(Listing.condition_of_textbook)
+                return HttpResponse(json.dumps({"Error": condition_error}),
+                                    content_type='application/json')
+        except KeyError:
+            pass  # Default value of 'NEW' will be used
+
+        try:
+            if data['status'] in [item[0] for item in Listing.status_of_listing]:
+                argument_dictionary['status'] = data['status']
+            else:
+                status_error = "Status provided is not in list: " + str(Listing.status_of_listing)
+                return HttpResponse(json.dumps({"Error": status_error}),
+                                    content_type='application/json')
+        except KeyError:
+            pass  # Default value of 'For Sale' will be used
+
+        new_listing = Listing.objects.create(**argument_dictionary)
+        response = {"status": "200", "new_listing": new_listing.as_json()}
+        return HttpResponse(json.dumps(response), content_type='application/json')  # Everything is a-ok
+
+    except ValueError:  # Means that JSON was not a part of the request
+        return HttpResponse(json.dumps({"Error": "JSON object not sent as part of POST request"}),
+                            content_type='application/json')
 
 
 @require_POST
