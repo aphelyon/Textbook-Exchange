@@ -8,6 +8,7 @@ import json
 # Create your views here.
 
 def listing_view(request, pk):
+    """Right now, this just returns the details of a listing and nothing else"""
     request_url = 'http://models-api:8000/api/v1/listings/' + str(pk)
     database_request = urllib.request.Request(request_url)
     # This is from the code in the write-up
