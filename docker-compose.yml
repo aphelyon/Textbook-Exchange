@@ -7,3 +7,23 @@ models:
     ports:
       - "8001:8000"
     command: bash -c "python ./app/textbookexchange/manage.py makemigrations myapp && python ./app/textbookexchange/manage.py makemigrations && python ./app/textbookexchange/manage.py migrate && python ./app/textbookexchange/manage.py loaddata db.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/textbookexchange/textbookexchange/wsgi.py"
+
+exp:
+    image: tp33/django
+    links:
+      - models:models-api
+    ports:
+      - "8002:8000"
+    volumes:
+      - .:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/experience/experience/wsgi.py"
+
+web:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/web/web/wsgi.py"
