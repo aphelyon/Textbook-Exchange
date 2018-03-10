@@ -1,0 +1,44 @@
+/*.nav {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+    position: inline;
+}*/
+.mynav {
+    background-color: #000099;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.mynav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.mynav a:hover {
+    background-color: #00ccff;
+    color: black;
+}
+
+#logOut {
+  float: right;
+}
+
+
+select {
+  width: 300px;
+}
+
+#listTable {
+  margin: auto;
+}
+
+p {
+  word-wrap: break-word !important;
+}
