@@ -513,3 +513,15 @@ def delete_listing(request, pk):
     except Listing.DoesNotExist:
         return HttpResponse(json.dumps({"Error": "Requested Listing object does not exist"}),
                             content_type='application/json')
+
+
+def user_listings(request, pk):
+    """Retrieve a json-formatted list of all listings related to a user denoted by pk"""
+    # We keep the list of listings here
+    try:
+        user = User.objects.get(pk=pk)
+        user_listings = [listing.as_json() for listing in user.listing_set.all()]
+        return HttpResponse(json.dumps(user_listings))
+    except User.DoesNotExist:
+        return HttpResponse(json.dumps({"Error": "Requested User object does not exist"}),
+                            content_type='application/json')
