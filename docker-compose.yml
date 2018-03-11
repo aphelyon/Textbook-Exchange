@@ -6,7 +6,7 @@ models:
       - .:/app
     ports:
       - "8001:8000"
-    command: bash -c "python ./app/textbookexchange/manage.py makemigrations myapp && python ./app/textbookexchange/manage.py makemigrations && python ./app/textbookexchange/manage.py migrate && python ./app/textbookexchange/manage.py loaddata db.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/textbookexchange/textbookexchange/wsgi.py"
+    command: bash -c "python ./app/textbookexchange/manage.py makemigrations myapp && python ./app/textbookexchange/manage.py makemigrations && python ./app/textbookexchange/manage.py migrate && python ./app/textbookexchange/manage.py loaddata ./app/textbookexchange/db.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/textbookexchange/textbookexchange/wsgi.py"
 
 exp:
     image: tp33/django
