@@ -4,5 +4,14 @@
 <h1>Textbook Exchange</h1>
 
   <p>Welcome to the <em>Textbook Exchange</em>.</p>
-
+    {% if most_viewed.ok %}
+        </br><h4>Most Popular Listings</h4>
+        <ul>
+        {% for listing in most_viewed.results %}
+            <li><a href="{% url 'webapp:listing' pk=listing.pk %}">{{ listing.item.title }} (${{ listing.price_text }})</a>
+                <ul><li>Seller: <a href="">{{ listing.user.username }}</a></li></ul>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}

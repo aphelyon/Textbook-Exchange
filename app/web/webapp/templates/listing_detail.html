@@ -5,6 +5,7 @@
         <h1>This listing might not exist</h1>
         <p>Unfortunately, we couldn't find this listing right now.</p>
     {% else %}
+        {% load humanize %}
         <h1>{{ results.item.title }}</h1>
         <p><strong>For Sale By: </strong><a href="">{{ results.user.username }}</a></p>
         <p><strong>Status: </strong>{{ results.status }}</p>
@@ -13,6 +14,7 @@
         <p><strong>Price: </strong>${{ results.price_text }}</p>
         <p><strong>Book Condition: </strong>{{ results.condition }}</p>
         <p><strong>ISBN: </strong>{{ results.item.ISBN }}</p>
+        <p>You're the <em>{{ results.viewed_count|ordinal }}</em> person to view this listing.</p>
     {% endif %}
 
 {% endblock %}

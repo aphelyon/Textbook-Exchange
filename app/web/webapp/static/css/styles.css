@@ -43,3 +43,8 @@ select {
 p {
   word-wrap: break-word !important;
 }
+
+ul li ul li{
+    font-size: smaller;
+    list-style-type: none;
+}

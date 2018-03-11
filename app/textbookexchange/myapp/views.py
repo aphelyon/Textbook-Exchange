@@ -472,3 +472,24 @@ def user_listings(request, pk):
         return error(request, "Requested User object does not exist")
 
 
+def view_count_listings(request, pk):
+    """Update the view count of a particular listing"""
+    try:
+        listing = Listing.objects.get(pk=pk)
+        listing.viewed_count += 1
+        listing.save()
+        return success(request)
+    except Listing.DoesNotExist:
+        return error(request, "Requested Listing object does not exist")
+
+
+def most_viewed_listings(request):
+    most_viewed_queryset = Listing.objects.order_by('-viewed_count')
+    if len(most_viewed_queryset) < 5:
+        most_viewed = [listing.as_json() for listing in most_viewed_queryset]
+    else:
+        most_viewed = [listing.as_json() for listing in most_viewed_queryset[:5]]
+    if len(most_viewed) > 0:
+        return success(request, most_viewed)
+    else:
+        return error(request, "No Listing objects exist")
