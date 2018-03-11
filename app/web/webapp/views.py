@@ -15,7 +15,7 @@ def listing_view(request, pk):
     experience_request = urllib.request.Request(request_url)
     # This is from the code in the write-up
     listing_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-    if 'Error' in listing_details:
+    if 'error' in listing_details:
         listing_details['does_not_exist'] = True
         return render(request, 'listing_detail.html', listing_details)
     else:
