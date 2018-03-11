@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from myapp import models
 import json
 
@@ -9,8 +9,13 @@ class CreateUserTestCase(TestCase):
         pass
 
     def test_successful_response(self):
-        post_data = {'first_name': 'foo', 'last_name': 'bar', 'username': 'baz', 'email': 'email@gmail.com'}
+        headerInfo = {'content-type': 'application/json'}
+        post_data = {}
+        post_data['first_name'] = 'foo'
+        post_data['last_name'] = 'bar'
+        post_data['username'] ='baz'
+        post_data['email'] ='email@gmail.com'
         c = Client()
-        response = c.post('v1/users/create', post_data)
-        json_obj = json.loads((response.content).decode("utf-8"))
-        self.assertEquals(json_obj["status"], "200")
+        response = c.post('/api/v1/users/create', headers=headerInfo, data = json.dumps(post_data))
+        print(response.content)
+        self.assertEquals(response["status"], "200")
