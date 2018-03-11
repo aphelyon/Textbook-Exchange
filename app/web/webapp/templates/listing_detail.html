@@ -1,0 +1,18 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+    {% if does_not_exist %}
+        <h1>Listing does not exist</h1>
+        <p>Unfortunately, we couldn't find this listing.</p>
+    {% else %}
+        <h1>{{ item.title }}</h1>
+        <p><strong>For Sale By: </strong><a href="">{{ user.username }}</a></p>
+        <p><strong>Status: </strong>{{ status }}</p>
+        <p><strong>Author: </strong>{{ item.author }}</p>
+        <p><strong>Publication Date: </strong>{{ item.pub_date|date:"M d, Y" }}</p>
+        <p><strong>Price: </strong>${{ price_text }}</p>
+        <p><strong>Book Condition: </strong>{{ condition }}</p>
+        <p><strong>ISBN: </strong>{{ item.ISBN }}</p>
+    {% endif %}
+
+{% endblock %}

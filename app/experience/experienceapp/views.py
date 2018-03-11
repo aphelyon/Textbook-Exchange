@@ -14,3 +14,8 @@ def listing_view(request, pk):
     # This is from the code in the write-up
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def homepage_view(request):
+    pass
+
