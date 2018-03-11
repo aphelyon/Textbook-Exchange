@@ -27,7 +27,7 @@ def details_user(request, pk):
         user = User.objects.get(pk=pk)
         if request.method == "POST":
             try:
-                data = json.loads(request.body.decode('utf-8'))
+                data = request.POST
                 try:
                     user.first_name = data['first_name']
                 except KeyError:
@@ -64,7 +64,7 @@ def details_user(request, pk):
 @require_POST
 def create_user(request):
     try:
-        data = json.loads(request.body.decode('utf-8'))
+        data = request.POST
         try:
             first_name = data['first_name']
         except KeyError:
@@ -114,7 +114,7 @@ def details_professor(request, pk):
 
         if request.method == "POST":
             try:
-                data = json.loads(request.body.decode('utf-8'))
+                data = request.POST
                 try:
                     retrieved_professor.name = data['name']
                 except KeyError:
@@ -137,7 +137,7 @@ def details_professor(request, pk):
 @require_POST
 def create_professor(request):
     try:
-        data = json.loads(request.body.decode('utf-8'))
+        data = request.POST
         try:
             name = data['name']
         except KeyError:
@@ -171,7 +171,7 @@ def details_course(request, pk):
         if request.method == "POST":
 
             try:
-                data = json.loads(request.body.decode('utf-8'))
+                data = request.POST
                 try:
                     retrieved_courses.identifier = data['identifier']
                 except KeyError:
@@ -208,7 +208,7 @@ def details_course(request, pk):
 @require_POST
 def create_course(request):
     try:
-        data = json.loads(request.body.decode('utf-8'))
+        data = request.POST
         professor_exists = False
         try:
             identifier = data['identifier']
@@ -260,7 +260,7 @@ def details_textbook(request, pk):
         if request.method == "POST":
 
             try:
-                data = json.loads(request.body.decode('utf-8'))
+                data = request.POST
                 try:
                     retrieved_textbook.item_title = data['item_title']
                 except KeyError:
@@ -300,7 +300,7 @@ def details_textbook(request, pk):
 @require_POST
 def create_textbook(request):
     try:
-        data = json.loads(request.body.decode('utf-8'))
+        data = request.POST
         course_exists = False
         try:
             title = data['item_title']
@@ -357,7 +357,7 @@ def details_listing(request, pk):
         retrieved_listing = Listing.objects.get(pk=pk)
         if request.method == "POST":
             try:
-                data = json.loads(request.body.decode('utf-8'))
+                data = request.POST
                 try:
                     retrieved_listing.item = Textbook.objects.get(pk=data['textbook_key'])
                 except KeyError:
@@ -404,7 +404,7 @@ def details_listing(request, pk):
 @require_POST
 def create_listing(request):
     try:
-        data = json.loads(request.body.decode('utf-8'))
+        data = request.POST
         # We use this to handle our 3 cases all-in-one when a status isn't sent, a condition isn't sent, or both aren't
         argument_dictionary = {}
         try:
