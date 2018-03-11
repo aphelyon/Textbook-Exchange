@@ -109,3 +109,43 @@ class GetUserDetailsTestCase(TestCase):
         gotten = get('/api/v1/users/4')
         self.assertTrue(gotten['ok'])
 
+    def tearDown(self):
+        pass
+
+class CreateProfTestCase(TestCase):
+    def setUp(self):
+        pass
+
+    def test_successful_post(self):
+        post_data = {}
+        post_data['name'] = 'Tom'
+        post_data['email'] = None
+        self.assertTrue((send(post_data, '/api/v1/professors/create')["ok"]))
+
+    def test_successful_post_with_email(self):
+        post_data = {}
+        post_data['name'] = 'Tom Brady'
+        post_data['email'] = 'email@tombrady.com'
+        self.assertTrue((send(post_data, '/api/v1/professors/create')["ok"]))
+
+    def test_bad_name(self):
+        post_data = {}
+        post_data['email'] = 'asdas'
+        self.assertTrue(
+            (send(post_data, '/api/v1/professors/create')["error"]) == "Required field name was not supplied")
+
+    def tearDown(self):
+        pass
+
+class GetProfdetailtestcase(TestCase):
+    def setUp(self):
+        pass
+    def test_successful_get(self):
+        post_data = {}
+        post_data['name'] = 'Tom'
+        post_data['email'] = None
+        response = send(post_data, '/api/v1/professors/create')
+        gotton = get('/api/v1/professors/3')
+        self.assertTrue(gotton['ok'])
+    def tearDown(self):
+        pass
