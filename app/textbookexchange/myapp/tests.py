@@ -18,6 +18,7 @@ def get(url):
 
 
 class CreateUserTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json',]
     def setUp(self):
         pass
 
@@ -95,6 +96,7 @@ class CreateUserTestCase(TestCase):
         pass
 
 class GetUserDetailsTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
     def setUp(self):
         pass
 
@@ -106,13 +108,14 @@ class GetUserDetailsTestCase(TestCase):
         post_data['email'] ='tswift@gmail.com'
         post_data['password'] = 'redrum'
         response = send(post_data, '/api/v1/users/create')
-        gotten = get('/api/v1/users/4')
+        gotten = get('/api/v1/users/1')
         self.assertTrue(gotten['ok'])
 
     def tearDown(self):
         pass
 
 class CreateProfTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
     def setUp(self):
         pass
 
@@ -138,6 +141,7 @@ class CreateProfTestCase(TestCase):
         pass
 
 class GetProfdetailtestcase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
     def setUp(self):
         pass
     def test_successful_get(self):
@@ -147,5 +151,38 @@ class GetProfdetailtestcase(TestCase):
         response = send(post_data, '/api/v1/professors/create')
         gotton = get('/api/v1/professors/3')
         self.assertTrue(gotton['ok'])
+    def tearDown(self):
+        pass
+
+class CreateCourseTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+    def setUp(self):
+        pass
+
+    def test_successful_post_without_prof(self):
+        post_data = {}
+        post_data['identifier'] = 'ISBN13'
+        post_data['department'] = 'math'
+        post_data['name'] = 'Math1310'
+        self.assertTrue((send(post_data, '/api/v1/courses/create')["ok"]))
+
+    def test_successful_post_with_prof(self):
+        post_data = {}
+        post_data['identifier'] = 'ISBN13'
+        post_data['department'] = 'math'
+        post_data['professor_key'] = 2
+        post_data['name'] = 'Math1310'
+        self.assertTrue((send(post_data, '/api/v1/courses/create')["ok"]))
+
+    def test_wrong_prof(self):
+        post_data = {}
+        post_data['identifier'] = 'ISBN13'
+        post_data['department'] = 'math'
+        post_data['professor_key'] = 128391028
+        post_data['name'] = 'Math1310'
+        #self.assertRaises(models.Professor.DoesNotExist, send(post_data,'/api/v1/courses/create'))
+        self.assertTrue(
+            (send(post_data, '/api/v1/courses/create')["error"]) == "Requested Professor object does not exist")
+
     def tearDown(self):
         pass
