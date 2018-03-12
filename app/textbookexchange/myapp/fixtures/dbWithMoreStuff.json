@@ -58,7 +58,7 @@
     "identifier": "CS 2150",
     "department": "Computer Science",
     "professor": 3,
-    "viewed_count": 1,
+    "viewed_count": 6,
     "name": "Program and Data Representation"
   }
 },
@@ -113,7 +113,7 @@
     "identifier": "APMA 2120",
     "department": "Computer Science",
     "professor": null,
-    "viewed_count": 6,
+    "viewed_count": 1,
     "name": "Calculus 3"
   }
 },

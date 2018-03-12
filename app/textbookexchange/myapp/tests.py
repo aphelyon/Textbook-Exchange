@@ -703,7 +703,7 @@ class MostViewedTestCase(TestCase):
 
     def test_most_viewed_courses(self):
         jsonObject = get('/api/v1/courses/most_viewed')
-        self.assertEqual(jsonObject['results'][0]['pk'], "6")
+        self.assertEqual(jsonObject['results'][0]['pk'], "1")
         self.assertEqual(jsonObject['results'][1]['pk'], "5")
         self.assertEqual(jsonObject['results'][2]['pk'], "4")
         self.assertEqual(jsonObject['results'][3]['pk'], "3")
@@ -715,9 +715,9 @@ class MostViewedTestCase(TestCase):
         post('/api/v1/courses/4/delete')
         post('/api/v1/courses/6/delete')
         jsonObject = get('/api/v1/courses/most_viewed')
-        self.assertEqual(jsonObject['results'][0]['pk'], "5")
-        self.assertEqual(jsonObject['results'][1]['pk'], "3")
-        self.assertEqual(jsonObject['results'][2]['pk'], "1")
+        self.assertEqual(jsonObject['results'][0]['pk'], "1")
+        self.assertEqual(jsonObject['results'][1]['pk'], "5")
+        self.assertEqual(jsonObject['results'][2]['pk'], "3")
         self.assertEqual(len(jsonObject['results']), 3)
 
     def tearDown(self):
