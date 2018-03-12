@@ -10,6 +10,9 @@
         {% if textbook.results.course %}
             <p><strong>Course: </strong>: </strong><a href="{% url 'webapp:course' pk=textbook.results.course.pk %}">{{ textbook.results.course.identifier }}</a></p>
             {% endif %}
+        <p><strong>Author:</strong> {{ textbook.results.author }}</p>
+        <p><strong>Date Published:</strong> {{ textbook.results.pub_date|date:"M d, Y" }}</p>
+        <p><strong>ISBN:</strong> {{ textbook.results.ISBN }}</p>
     {% if listings.ok %}
         {% if listings.results|length != 0  %}
             </br><h4>Available listings for this textbook:</h4>
