@@ -732,8 +732,6 @@ class UpdateListingDeatilsTestCase(TestCase):
         post_data['condition'] = 'USED_POOR'
         post_data['status'] = 'Sold'
         gottan2 = send(post_data, '/api/v1/listings/1')
-        print(gottan)
-        print(gottan2)
         self.assertFalse(gottan['results']['item']['pk'] == gottan2['results']['item']['pk'])
         self.assertFalse(gottan['results']['actualprice'] == gottan2['results']['actualprice'])
         self.assertFalse(gottan['results']['condition'] == gottan2['results']['condition'])
