@@ -443,6 +443,7 @@ def create_listing(request):
                 return error(request, status_error)
         except KeyError:
             pass  # Default value of 'For Sale' will be used
+        argument_dictionary['time_created'] = datetime.datetime.now()
 
         new_listing = Listing.objects.create(**argument_dictionary)
         response = new_listing.as_json()
@@ -491,5 +492,17 @@ def most_viewed_listings(request):
         most_viewed = [listing.as_json() for listing in most_viewed_queryset[:5]]
     if len(most_viewed) > 0:
         return success(request, most_viewed)
+    else:
+        return error(request, "No Listing objects exist")
+
+
+def newest_listings(request):
+    newest_queryset = Listing.objects.order_by('-time_created')
+    if len(newest_queryset) < 5:
+        newest = [listing.as_json() for listing in newest_queryset]
+    else:
+        newest = [listing.as_json() for listing in newest_queryset[:5]]
+    if len(newest) > 0:
+        return success(request, newest)
     else:
         return error(request, "No Listing objects exist")

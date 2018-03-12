@@ -23,4 +23,7 @@ def homepage_view(request):
     most_viewed_url = 'http://models-api:8000/api/v1/listings/most_viewed'
     most_viewed_request = urllib.request.Request(most_viewed_url)
     most_viewed_response = json.loads(urllib.request.urlopen(most_viewed_request).read().decode('utf-8'))
-    return JsonResponse({'most_viewed': most_viewed_response})
+    newest_url = 'http://models-api:8000/api/v1/listings/newest'
+    newest_request = urllib.request.Request(newest_url)
+    newest_response = json.loads(urllib.request.urlopen(newest_request).read().decode('utf-8'))
+    return JsonResponse({'most_viewed': most_viewed_response, 'newest': newest_response})

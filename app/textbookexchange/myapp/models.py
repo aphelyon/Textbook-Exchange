@@ -75,8 +75,9 @@ class Listing(models.Model):
             )
     status = models.CharField(max_length=20, choices=status_of_listing, default='For Sale')
     viewed_count = models.IntegerField(default=0)
+    time_created = models.DateTimeField('Listing was created on this date', null=True)
 
     def as_json(self):
         return dict(item=self.item.as_json(), price_text=self.price_text, actualprice=self.actualprice,
                     user=self.user.as_json(), condition=self.condition, status=self.status, pk=str(self.pk),
-                    viewed_count=self.viewed_count)
+                    viewed_count=self.viewed_count, time_created=self.time_created)

@@ -14,4 +14,14 @@
         {% endfor %}
         </ul>
     {% endif %}
+    {% if newest.ok %}
+        </br><h4>Newest Listings</h4>
+        <ul>
+        {% for listing in newest.results %}
+            <li><a href="{% url 'webapp:listing' pk=listing.pk %}">{{ listing.item.title }} (${{ listing.price_text }})</a>
+                <ul><li>Seller: <a href="">{{ listing.user.username }}</a></li></ul>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}

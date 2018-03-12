@@ -30,6 +30,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^v1/listings/create$', views.create_listing, name='create-listing-api'),  # Keep this on top, please
     url(r'^v1/listings/most_viewed$', views.most_viewed_listings, name='most-viewed-listings'),
+    url(r'^v1/listings/newest$', views.newest_listings, name='newest-listings'),
     url(r'^v1/listings/from_user/(?P<pk>[-\w]+)$', views.user_listings, name='get-user-listings'),
     url(r'^v1/listings/(?P<pk>[-\w]+)/incrementCount$',views.view_count_listings, name='increment-listing-count'),
     url(r'^v1/listings/(?P<pk>[-\w]+)$', views.details_listing, name='get-listing-api'),
