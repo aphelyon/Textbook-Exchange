@@ -685,3 +685,33 @@ class NewListingsTestCase(TestCase):
 
     def tearDown(self):
         pass
+
+
+class ReverseLookup(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_course_textbooks(self):
+        jsonObjectTextbooks = get('/api/v1/textbooks/from_course/1')
+        jsonObjectNoTextbooks = get('/api/v1/textbooks/from_course/2')
+        jsonObjectCourseDoesNotExist = get('/api/v1/textbooks/from_course/3')
+        self.assertTrue(jsonObjectTextbooks['ok'])
+        self.assertEqual(jsonObjectTextbooks['results'][0]['pk'], "1")
+        self.assertTrue(jsonObjectNoTextbooks['ok'])
+        self.assertNotIn('results', jsonObjectNoTextbooks)
+        self.assertFalse(jsonObjectCourseDoesNotExist['ok'])
+
+    def test_textbook_listings(self):
+        jsonObjectListings = get('/api/v1/listings/from_textbook/2')
+        jsonObjectNoListings = get('/api/v1/listings/from_textbook/1')
+        jsonObjectTextbookDoesNotExist = get('/api/v1/listings/from_textbook/3')
+        self.assertTrue(jsonObjectListings['ok'])
+        self.assertEqual(jsonObjectListings['results'][0]['pk'], "1")
+        self.assertTrue(jsonObjectNoListings['ok'])
+        self.assertNotIn('results', jsonObjectNoListings)
+        self.assertFalse(jsonObjectTextbookDoesNotExist['ok'])
+
+    def tearDown(self):
+        pass
