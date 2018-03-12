@@ -46,4 +46,6 @@ def textbook_view(request, pk):
     experience_url = 'http://exp-api:8000/experience/textbooks/' + str(pk)
     experience_request = urllib.request.Request(experience_url)
     textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    if 'textbook' in textbook_details:
+        textbook_details['textbook']['results']['pub_date'] = datetime.strptime(textbook_details['textbook']['results']['pub_date'][:-6], "%Y-%m-%d %H:%M:%S")
     return render(request, 'textbook_detail.html', textbook_details)
