@@ -24,3 +24,12 @@ def listing_view(request, pk):
         listing_details['results']['item']['pub_date'] = datetime.strptime(listing_details['results']['item']
                                                                            ['pub_date'][:-6], "%Y-%m-%d %H:%M:%S")
     return render(request, 'listing_detail.html', listing_details)
+
+
+def user_profile_view(request, pk):
+    experience_url = 'http://exp-api:8000/experience/users/' + str(pk)
+    experience_request = urllib.request.Request(experience_url)
+    user_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    if 'results' in user_details:
+        user_details['results']['userJoined'] = datetime.strptime(user_details['results']['userJoined'][:-6], "%Y-%m-%d %H:%M:%S")
+    return render(request, 'user_profile.html', user_details)

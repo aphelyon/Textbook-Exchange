@@ -27,3 +27,10 @@ def homepage_view(request):
     newest_request = urllib.request.Request(newest_url)
     newest_response = json.loads(urllib.request.urlopen(newest_request).read().decode('utf-8'))
     return JsonResponse({'most_viewed': most_viewed_response, 'newest': newest_response})
+
+
+def user_profile_view(request, pk):
+    database_request_url = 'http://models-api:8000/api/v1/users/' + str(pk)
+    database_request = urllib.request.Request(database_request_url)
+    response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
+    return JsonResponse(response)

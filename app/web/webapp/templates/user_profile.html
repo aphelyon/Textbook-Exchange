@@ -1,0 +1,14 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+    {% if not ok %}
+        <h1>This user might not exist</h1>
+        <p>Unfortunately, we couldn't find this user's profile right now.</p>
+    {% else %}
+        <h1>{{ results.username }}</h1>
+        <p><strong>Name: </strong>{{ results.first_name }} {{ results.last_name }}</p>
+        <p><strong>Email: </strong>{{ results.email }}</p>
+        <p><strong>Join date:</strong>{{ results.userJoined|date:"M d, Y" }}</p>
+    {% endif %}
+
+{% endblock %}
