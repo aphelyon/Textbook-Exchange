@@ -254,6 +254,40 @@ def delete_course(request, pk):
     except Course.DoesNotExist:
         return error(request, "Requested Course object does not exist")
 
+
+def view_count_courses(request, pk):
+    """Update the view count of a particular listing"""
+    try:
+        course = Course.objects.get(pk=pk)
+        course.viewed_count += 1
+        course.save()
+        return success(request)
+    except Listing.DoesNotExist:
+        return error(request, "Requested Course object does not exist")
+
+
+def course_textbooks(request, pk):
+    """Retrieve a json-formatted list of all textbooks related to a course denoted by pk"""
+    try:
+        course = Course.objects.get(pk=pk)
+        textbooks = [textbook.as_json() for textbook in course.textbook_set.all()]
+        return success(request, textbooks)
+    except Course.DoesNotExist:
+        return error(request, "Requested Course object does not exist")
+
+
+def most_viewed_courses(request):
+    most_viewed_queryset = Course.objects.order_by('-viewed_count')
+    if len(most_viewed_queryset) < 5:
+        most_viewed = [course.as_json() for course in most_viewed_queryset]
+    else:
+        most_viewed = [course.as_json() for course in most_viewed_queryset[:5]]
+    if len(most_viewed) > 0:
+        return success(request, most_viewed)
+    else:
+        return error(request, "No Course objects exist")
+
+
 def details_textbook(request, pk):
     try:
         retrieved_textbook = Textbook.objects.get(pk=pk)
@@ -347,6 +381,16 @@ def delete_textbook(request, pk):
     try:
         Textbook.objects.get(pk=pk).delete()
         return success(request, {"Status": "200"})
+    except Textbook.DoesNotExist:
+        return error(request, "Requested Textbook object does not exist")
+
+
+def textbook_listings(request, pk):
+    """Retrieve a json-formatted list of all textbooks related to a course denoted by pk"""
+    try:
+        textbook = Textbook.objects.get(pk=pk)
+        listings = [listing.as_json() for listing in textbook.listing_set.all()]
+        return success(request, listings)
     except Textbook.DoesNotExist:
         return error(request, "Requested Textbook object does not exist")
 
@@ -462,6 +506,7 @@ def delete_listing(request, pk):
         return error(request, "Requested Listing object does not exist")
 
 
+# Ignore this for now, we're not using it
 def user_listings(request, pk):
     """Retrieve a json-formatted list of all listings related to a user denoted by pk"""
     # We keep the list of listings here

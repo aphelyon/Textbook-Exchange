@@ -33,3 +33,17 @@ def user_profile_view(request, pk):
     if 'results' in user_details:
         user_details['results']['userJoined'] = datetime.strptime(user_details['results']['userJoined'][:-6], "%Y-%m-%d %H:%M:%S")
     return render(request, 'user_profile.html', user_details)
+
+
+def course_view(request, pk):
+    experience_url = 'http://exp-api:8000/experience/courses/' + str(pk)
+    experience_request = urllib.request.Request(experience_url)
+    course_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    return render(request, 'course_detail.html', course_details)
+
+
+def textbook_view(request, pk):
+    experience_url = 'http://exp-api:8000/experience/textbooks/' + str(pk)
+    experience_request = urllib.request.Request(experience_url)
+    textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    return render(request, 'textbook_detail.html', textbook_details)

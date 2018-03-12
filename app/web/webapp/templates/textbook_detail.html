@@ -1,0 +1,27 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+    {% if not textbook.ok %}
+        <h1>This textbook might not exist</h1>
+        <p>Unfortunately, we couldn't find this textbook right now.</p>
+    {% else %}
+        {% load humanize %}
+        <h1>Textbook: {{ textbook.results.title }}</h1>
+        {% if textbook.results.course %}
+            <p><strong>Course: </strong>: </strong><a href="{% url 'webapp:course' pk=textbook.results.course.pk %}">{{ textbook.results.course.identifier }}</a></p>
+            {% endif %}
+    {% if listings.ok %}
+        {% if listings.results|length != 0  %}
+            </br><h4>Available listings for this textbook:</h4>
+            <ul>
+                {% for listing in listings.results %}
+            <li><a href="{% url 'webapp:listing' pk=listing.pk %}">{{ listing.item.title }} (${{ listing.price_text }})</a>
+                <ul><li>Seller: <a href="{% url 'webapp:user' pk=listing.user.pk %}">{{ listing.user.username }}</a></li></ul>
+            </li>
+            {% endfor %}
+            </ul>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+{% endblock %}

@@ -31,12 +31,13 @@ class Course(models.Model):
     department = models.CharField(max_length=100)
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
+    viewed_count = models.IntegerField(default=0)
 
     def as_json(self):
         if self.professor is not None:
-            return dict(identifier=self.identifier, department=self.department, professor=self.professor.as_json(), name=self.name, pk=str(self.pk))
+            return dict(identifier=self.identifier, department=self.department, professor=self.professor.as_json(), name=self.name, pk=str(self.pk), viewed_count=self.viewed_count)
         else:
-            return dict(identifier=self.identifier, department=self.department, name=self.name, pk=str(self.pk))
+            return dict(identifier=self.identifier, department=self.department, name=self.name, pk=str(self.pk), viewed_count=self.viewed_count)
 
 
 class Textbook(models.Model):
