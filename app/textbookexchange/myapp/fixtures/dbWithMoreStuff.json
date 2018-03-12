@@ -1,0 +1,228 @@
+[
+{
+  "model": "myapp.user",
+  "pk": 1,
+  "fields": {
+    "first_name": "Michael",
+    "last_name": "Chang",
+    "username": "mhc6kp",
+    "password": "safepassword",
+    "email": "mhc6kp@virginia.edu",
+    "userJoined": "2018-02-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.user",
+  "pk": 2,
+  "fields": {
+    "first_name": "Hunter",
+    "last_name": "Murphy",
+    "username": "bhm5zr",
+    "password": "saferpassword",
+    "email": "bhm5zr@virginia.edu",
+    "userJoined": "2018-02-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.user",
+  "pk": 3,
+  "fields": {
+    "first_name": "Siteng",
+    "last_name": "Zhang",
+    "username": "sz4dd",
+    "password": "safestpassword",
+    "email": "sz4dd@virginia.edu",
+    "userJoined": "2018-02-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.professor",
+  "pk": 2,
+  "fields": {
+    "name": "Thomas Pinckney",
+    "email": "tp3ks@virginia.edu"
+  }
+},
+{
+  "model": "myapp.professor",
+  "pk": 3,
+  "fields": {
+    "name": "Mark Floryan",
+    "email": "mfloryan@cs.virginia.edu"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 1,
+  "fields": {
+    "identifier": "CS 2150",
+    "department": "Computer Science",
+    "professor": 3,
+    "viewed_count": 1,
+    "name": "Program and Data Representation"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 2,
+  "fields": {
+    "identifier": "APMA 3100",
+    "department": "Applied Mathematics",
+    "professor": null,
+    "viewed_count": 2,
+    "name": "Linear Algebra"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 3,
+  "fields": {
+    "identifier": "CS 3205",
+    "department": "Computer Science",
+    "professor": 3,
+    "viewed_count": 3,
+    "name": "Human Computer Interaction"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 4,
+  "fields": {
+    "identifier": "CS 4102",
+    "department": "Computer Science",
+    "professor": 3,
+    "viewed_count": 4,
+    "name": "Algorithms"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 5,
+  "fields": {
+    "identifier": "CS 4501",
+    "department": "Computer Science",
+    "professor": 2,
+    "viewed_count": 5,
+    "name": "Internet Scale Applications"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 6,
+  "fields": {
+    "identifier": "APMA 2120",
+    "department": "Computer Science",
+    "professor": null,
+    "viewed_count": 6,
+    "name": "Calculus 3"
+  }
+},
+{
+  "model": "myapp.textbook",
+  "pk": 1,
+  "fields": {
+    "item_title": "Hitchikers Guide to the Galaxy",
+    "item_author": "Douglass Adams",
+    "course": 1,
+    "item_ISBN": "123456789",
+    "pub_date": "1979-10-12T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.textbook",
+  "pk": 2,
+  "fields": {
+    "item_title": "What If?",
+    "item_author": "Randall Munroe",
+    "course": null,
+    "item_ISBN": "987654321",
+    "pub_date": "2014-09-02T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 1,
+  "fields": {
+    "item": 2,
+    "price_text": "1,000.50",
+    "actualprice": 1000.5,
+    "user": 2,
+    "condition": "NEW",
+    "status": "Negotiation",
+    "viewed_count": 0,
+    "time_created": "2018-03-12T00:23:12.490Z"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 2,
+  "fields": {
+    "item": 1,
+    "price_text": "60",
+    "actualprice": 60,
+    "user": 1,
+    "condition": "USED_GOOD",
+    "status": "Negotiation",
+    "viewed_count": 5,
+    "time_created": "2018-03-10T00:23:12.490Z"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 3,
+  "fields": {
+    "item": 2,
+    "price_text": "50",
+    "actualprice": 50,
+    "user": 2,
+    "condition": "NEW",
+    "status": "For Sale",
+    "viewed_count": 4,
+    "time_created": "2018-02-12T00:23:12.490Z"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 4,
+  "fields": {
+    "item": 2,
+    "price_text": "76",
+    "actualprice": 76,
+    "user": 3,
+    "condition": "NEW",
+    "status": "Negotiation",
+    "viewed_count": 3,
+    "time_created": "2018-01-12T00:23:12.490Z"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 5,
+  "fields": {
+    "item": 1,
+    "price_text": "100",
+    "actualprice": 100,
+    "user": 1,
+    "condition": "NEW",
+    "status": "Negotiation",
+    "viewed_count": 15,
+    "time_created": "2018-05-12T00:23:12.490Z"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 6,
+  "fields": {
+    "item": 2,
+    "price_text": "51",
+    "actualprice": 51,
+    "user": 3,
+    "condition": "NEW",
+    "status": "Negotiation",
+    "viewed_count": 1,
+    "time_created": "2018-03-11T00:23:12.490Z"
+  }
+}
+
+]
+

@@ -262,7 +262,7 @@ def view_count_courses(request, pk):
         course.viewed_count += 1
         course.save()
         return success(request)
-    except Listing.DoesNotExist:
+    except Course.DoesNotExist:
         return error(request, "Requested Course object does not exist")
 
 

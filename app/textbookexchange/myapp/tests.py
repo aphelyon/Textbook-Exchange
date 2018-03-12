@@ -438,6 +438,7 @@ class CreatelistingTestCase(TestCase):
         post_data['condition'] = 'USED_GOOD'
         post_data['status'] = 'For Sale'
         self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
+        jsonObj = get('/api/v1/listings/1')
 
     def test_successful_list_with_default_condition(self):
         post_data = {}
@@ -576,6 +577,111 @@ class DeleteListingTestCase(TestCase):
     def test_user_not_found(self):
         self.assertFalse(get('/api/v1/listings/4')['ok'])
         self.assertFalse(post('/api/v1/listings/4/delete')['ok'])
+        self.assertEqual(post('/api/v1/listings/4/delete')['error'], "Requested Listing object does not exist")
+
+    def tearDown(self):
+        pass
+
+
+class ViewCountTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_increment_listing_viewcount(self):
+        self.assertTrue(get('/api/v1/listings/1/incrementCount')['ok'])
+        self.assertEqual(get('/api/v1/listings/1')['results']['viewed_count'], 1)
+
+    def test_failed_increment_listing(self):
+        self.assertFalse(get('/api/v1/listings/5/incrementCount')['ok'])
+        self.assertEqual(post('/api/v1/listings/5/incrementCount')['error'], "Requested Listing object does not exist")
+
+    def test_increment_course_viewcount(self):
+        self.assertTrue(get('/api/v1/courses/2/incrementCount')['ok'])
+        self.assertEqual(get('/api/v1/courses/2')['results']['viewed_count'], 1)
+
+    def test_failed_increment_course(self):
+        self.assertFalse(get('/api/v1/courses/5/incrementCount')['ok'])
+        self.assertEqual(post('/api/v1/courses/4/incrementCount')['error'], "Requested Course object does not exist")
+
+    def tearDown(self):
+        pass
+
+
+class MostViewedTestCase(TestCase):
+    fixtures = ['myapp/fixtures/dbWithMoreStuff.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_most_viewed_listings(self):
+        jsonObject = get('/api/v1/listings/most_viewed')
+        self.assertEqual(jsonObject['results'][0]['pk'], "5")
+        self.assertEqual(jsonObject['results'][1]['pk'], "2")
+        self.assertEqual(jsonObject['results'][2]['pk'], "3")
+        self.assertEqual(jsonObject['results'][3]['pk'], "4")
+        self.assertEqual(jsonObject['results'][4]['pk'], "6")
+        self.assertEqual(len(jsonObject['results']), 5)
+
+    def test_most_viewed_listings_less_than_five(self):
+        post('/api/v1/listings/2/delete')
+        post('/api/v1/listings/4/delete')
+        post('/api/v1/listings/6/delete')
+        jsonObject = get('/api/v1/listings/most_viewed')
+        self.assertEqual(jsonObject['results'][0]['pk'], "5")
+        self.assertEqual(jsonObject['results'][1]['pk'], "3")
+        self.assertEqual(jsonObject['results'][2]['pk'], "1")
+        self.assertEqual(len(jsonObject['results']), 3)
+
+    def test_most_viewed_courses(self):
+        jsonObject = get('/api/v1/courses/most_viewed')
+        self.assertEqual(jsonObject['results'][0]['pk'], "6")
+        self.assertEqual(jsonObject['results'][1]['pk'], "5")
+        self.assertEqual(jsonObject['results'][2]['pk'], "4")
+        self.assertEqual(jsonObject['results'][3]['pk'], "3")
+        self.assertEqual(jsonObject['results'][4]['pk'], "2")
+        self.assertEqual(len(jsonObject['results']), 5)
+
+    def test_most_viewed_courses_less_than_five(self):
+        post('/api/v1/courses/2/delete')
+        post('/api/v1/courses/4/delete')
+        post('/api/v1/courses/6/delete')
+        jsonObject = get('/api/v1/courses/most_viewed')
+        self.assertEqual(jsonObject['results'][0]['pk'], "5")
+        self.assertEqual(jsonObject['results'][1]['pk'], "3")
+        self.assertEqual(jsonObject['results'][2]['pk'], "1")
+        self.assertEqual(len(jsonObject['results']), 3)
+
+    def tearDown(self):
+        pass
+
+
+class NewListingsTestCase(TestCase):
+
+    fixtures = ['myapp/fixtures/dbWithMoreStuff.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_newest_listings(self):
+        jsonObject = get('/api/v1/listings/newest')
+        self.assertEqual(jsonObject['results'][0]['pk'], "5")
+        self.assertEqual(jsonObject['results'][1]['pk'], "1")
+        self.assertEqual(jsonObject['results'][2]['pk'], "6")
+        self.assertEqual(jsonObject['results'][3]['pk'], "2")
+        self.assertEqual(jsonObject['results'][4]['pk'], "3")
+        self.assertEqual(len(jsonObject['results']), 5)
+
+    def test_newest_listings_less_than_five(self):
+        post('/api/v1/listings/2/delete')
+        post('/api/v1/listings/4/delete')
+        post('/api/v1/listings/6/delete')
+        jsonObject = get('/api/v1/listings/newest')
+        self.assertEqual(jsonObject['results'][0]['pk'], "5")
+        self.assertEqual(jsonObject['results'][1]['pk'], "1")
+        self.assertEqual(jsonObject['results'][2]['pk'], "3")
+        self.assertEqual(len(jsonObject['results']), 3)
 
     def tearDown(self):
         pass
