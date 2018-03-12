@@ -9,7 +9,7 @@
         <h1>{{ course.results.identifier }}: {{ course.results.name }}</h1>
         {% if course.results.professor %}
             <p><strong>Professor Name: </strong>{{ course.results.professor.name }}</p>
-            <p><strong>Professor Email: </strong>{{ course.results.professor.email }}</p>
+            <p><strong>Professor Email: </strong><a href="mailto: {{ course.results.professor.email }}">{{ course.results.professor.email }}</a></p>
             {% else %}
             <p>We don't have a professor for this class yet.</p>
             {% endif %}

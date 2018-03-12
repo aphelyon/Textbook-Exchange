@@ -438,7 +438,6 @@ class CreatelistingTestCase(TestCase):
         post_data['condition'] = 'USED_GOOD'
         post_data['status'] = 'For Sale'
         self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
-        jsonObj = get('/api/v1/listings/1')
 
     def test_successful_list_with_default_condition(self):
         post_data = {}
