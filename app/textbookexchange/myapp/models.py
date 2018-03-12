@@ -12,7 +12,7 @@ class User(models.Model):
     # Maybe edit this to give the password? Not sure
     def as_json(self):
         return dict(first_name=self.first_name, last_name=self.last_name, username=self.username, email=self.email,
-                    userJoined=str(self.userJoined),pk=str(self.pk))
+                    userJoined=str(self.userJoined), pk=str(self.pk))
 
 
 class Professor(models.Model):

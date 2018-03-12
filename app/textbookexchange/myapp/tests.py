@@ -39,7 +39,14 @@ class CreateUserTestCase(TestCase):
         post_data['username'] ='baz'
         post_data['email'] ='email@gmail.com'
         post_data['password'] = 'secret'
-        self.assertTrue((send(post_data, '/api/v1/users/create')["ok"]))
+        response = (send(post_data, '/api/v1/users/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/users/' + str(response['results']['User']['pk'])))['results']
+        self.assertEqual(response2['first_name'], 'foo')
+        self.assertEqual(response2['last_name'], 'bar')
+        self.assertEqual(response2['username'], 'baz')
+        self.assertEqual(response2['email'], 'email@gmail.com')
 
     def test_first_name_error(self):
         post_data = {}
@@ -160,13 +167,22 @@ class CreateProfTestCase(TestCase):
         post_data = {}
         post_data['name'] = 'Tom'
         post_data['email'] = None
-        self.assertTrue((send(post_data, '/api/v1/professors/create')["ok"]))
+        response = (send(post_data, '/api/v1/professors/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/professors/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['name'], 'Tom')
 
     def test_successful_post_with_email(self):
         post_data = {}
         post_data['name'] = 'Tom Brady'
         post_data['email'] = 'email@tombrady.com'
-        self.assertTrue((send(post_data, '/api/v1/professors/create')["ok"]))
+        response = (send(post_data, '/api/v1/professors/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/professors/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['name'], 'Tom Brady')
+        self.assertEqual(response2['email'], 'email@tombrady.com')
 
     def test_bad_name(self):
         post_data = {}
@@ -224,7 +240,13 @@ class CreateCourseTestCase(TestCase):
         post_data['identifier'] = 'ISBN13'
         post_data['department'] = 'math'
         post_data['name'] = 'Math1310'
-        self.assertTrue((send(post_data, '/api/v1/courses/create')["ok"]))
+        response = (send(post_data, '/api/v1/courses/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/courses/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['identifier'], 'ISBN13')
+        self.assertEqual(response2['department'], 'math')
+        self.assertEqual(response2['name'], 'Math1310')
 
     def test_successful_post_with_prof(self):
         post_data = {}
@@ -232,7 +254,14 @@ class CreateCourseTestCase(TestCase):
         post_data['department'] = 'math'
         post_data['professor_key'] = 2
         post_data['name'] = 'Math1310'
-        self.assertTrue((send(post_data, '/api/v1/courses/create')["ok"]))
+        response = (send(post_data, '/api/v1/courses/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/courses/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['identifier'], 'ISBN13')
+        self.assertEqual(response2['department'], 'math')
+        self.assertEqual(response2['name'], 'Math1310')
+        self.assertEqual(response2['professor']['pk'], '2')
 
     def test_wrong_prof(self):
         post_data = {}
@@ -320,7 +349,14 @@ class CreateTextbookTestCase(TestCase):
         post_data['item_author'] = 'B'
         post_data['item_ISBN'] = 'ISBN1310'
         post_data['pub_date'] = '1979-10-12'
-        self.assertTrue((send(post_data, '/api/v1/textbooks/create')["ok"]))
+        response = (send(post_data, '/api/v1/textbooks/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/textbooks/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['title'], 'A')
+        self.assertEqual(response2['author'], 'B')
+        self.assertEqual(response2['ISBN'], 'ISBN1310')
+        self.assertEqual(response2['pub_date'], '1979-10-12 00:00:00+00:00')
 
     def test_successful_post_with_course(self):
         post_data = {}
@@ -329,7 +365,16 @@ class CreateTextbookTestCase(TestCase):
         post_data['course_key'] = 1
         post_data['item_ISBN'] = 'ISBN1310'
         post_data['pub_date'] = '1979-10-12'
-        self.assertTrue((send(post_data, '/api/v1/textbooks/create')["ok"]))
+        response = (send(post_data, '/api/v1/textbooks/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/textbooks/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['title'], 'Hitchhikerguide')
+        self.assertEqual(response2['author'], 'IDK')
+        self.assertEqual(response2['ISBN'], 'ISBN1310')
+        self.assertEqual(response2['pub_date'], '1979-10-12 00:00:00+00:00')
+        self.assertEqual(response2['course']['pk'], "1")
+
 
     def test_unsuccessful_post_with_wrong_course(self):
         post_data = {}
@@ -433,35 +478,58 @@ class CreatelistingTestCase(TestCase):
         post_data = {}
         post_data['textbook_key'] = 1
         post_data['price'] = 100.2
-        #post_data['actualprice'] = 100.2
         post_data['user_key'] = 1
         post_data['condition'] = 'USED_GOOD'
         post_data['status'] = 'For Sale'
-        self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
+        response = (send(post_data, '/api/v1/listings/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/listings/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['item']['pk'], '1')
+        self.assertEqual(response2['price_text'], '100.2')
+        self.assertEqual(response2['actualprice'], 100.2)
+        self.assertEqual(response2['user']['pk'], '1')
+        self.assertEqual(response2['condition'], 'USED_GOOD')
+        self.assertEqual(response2['status'], 'For Sale')
 
     def test_successful_list_with_default_condition(self):
         post_data = {}
         post_data['textbook_key'] = 1
         post_data['price'] = 145
-        #post_data['actualprice'] = 100.2
         post_data['user_key'] = 2
         post_data['status'] = 'For Sale'
-        self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
+        response = (send(post_data, '/api/v1/listings/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/listings/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['item']['pk'], '1')
+        self.assertEqual(response2['price_text'], '145')
+        self.assertEqual(response2['actualprice'], 145)
+        self.assertEqual(response2['user']['pk'], '2')
+        self.assertEqual(response2['condition'], 'NEW')
+        self.assertEqual(response2['status'], 'For Sale')
 
     def test_successful_list_with_default_status(self):
         post_data = {}
         post_data['textbook_key'] = 1
         post_data['price'] = 145
-        #post_data['actualprice'] = 100.2
         post_data['user_key'] = 2
         post_data['condition'] = 'USED_GOOD'
-        self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
+        response = (send(post_data, '/api/v1/listings/create'))
+        self.assertTrue(response["ok"])
+        # Check if the created object can be retrieved from the db and has the right fields
+        response2 = (get('/api/v1/listings/' + str(response['results']['pk'])))['results']
+        self.assertEqual(response2['item']['pk'], '1')
+        self.assertEqual(response2['price_text'], '145')
+        self.assertEqual(response2['actualprice'], 145)
+        self.assertEqual(response2['user']['pk'], '2')
+        self.assertEqual(response2['condition'], 'USED_GOOD')
+        self.assertEqual(response2['status'], 'For Sale')
 
     def test_unsuccessful_list_wrong_textbook_key(self):
         post_data = {}
         post_data['textbook_key'] = 5
         post_data['price'] = 100.2
-        # post_data['actualprice'] = 100.2
         post_data['user_key'] = 1
         post_data['condition'] = 'NEW'
         post_data['status'] = 'For Sale'
