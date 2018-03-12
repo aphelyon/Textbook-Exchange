@@ -58,6 +58,14 @@ class CreateUserTestCase(TestCase):
         self.assertTrue(
             (send(post_data, '/api/v1/users/create')["error"]) == "Required field username was not supplied")
 
+    def test_existing_username_error(self):
+        post_data = {}
+        post_data['first_name'] = 'foo'
+        post_data['last_name'] = 'bar'
+        post_data['username'] = 'mhc6kp'
+        post_data['password'] = 'secret'
+        post_data['email'] = 'email@gmail.com'
+
     def test_password_error(self):
         post_data = {}
         post_data['first_name'] = 'foo'
@@ -104,6 +112,10 @@ class GetUserDetailsTestCase(TestCase):
         gottan = get('/api/v1/users/1')
         self.assertTrue(gottan['ok'])
 
+    def test_unsuccessful_get(self):
+        gottan = get('/api/v1/users/5')
+        self.assertFalse(gottan['ok'])
+
     def tearDown(self):
         pass
 
@@ -140,6 +152,11 @@ class GetProfdetailtestcase(TestCase):
     def test_successful_get(self):
         gotten = get('/api/v1/professors/3')
         self.assertTrue(gotten['ok'])
+
+    def test_unsuccessful_get(self):
+        gotten = get('/api/v1/professors/6')
+        self.assertFalse(gotten['ok'])
+
     def tearDown(self):
         pass
 
@@ -167,11 +184,38 @@ class CreateCourseTestCase(TestCase):
         post_data = {}
         post_data['identifier'] = 'ISBN13'
         post_data['department'] = 'math'
-        post_data['professor_key'] = 128391028
+        post_data['professor_key'] = 1321412
         post_data['name'] = 'Math1310'
         #self.assertRaises(models.Professor.DoesNotExist, send(post_data,'/api/v1/courses/create'))
         self.assertTrue(
             (send(post_data, '/api/v1/courses/create')["error"]) == "Requested Professor object does not exist")
+
+    def test_no_id(self):
+        post_data = {}
+        post_data['department'] = 'math'
+        post_data['professor_key'] = 2
+        post_data['name'] = 'Math1310'
+        # self.assertRaises(models.Professor.DoesNotExist, send(post_data,'/api/v1/courses/create'))
+        self.assertTrue(
+            (send(post_data, '/api/v1/courses/create')["error"]) == "Required field identifier was not supplied")
+
+    def test_no_department(self):
+        post_data = {}
+        post_data['identifier'] = 'math'
+        post_data['professor_key'] = 2
+        post_data['name'] = 'Math1310'
+        # self.assertRaises(models.Professor.DoesNotExist, send(post_data,'/api/v1/courses/create'))
+        self.assertTrue(
+            (send(post_data, '/api/v1/courses/create')["error"]) == "Required field department was not supplied")
+
+    def test_no_name(self):
+        post_data = {}
+        post_data['identifier'] = '1230981'
+        post_data['department'] = 'Math'
+        post_data['professor_key'] = 2
+        # self.assertRaises(models.Professor.DoesNotExist, send(post_data,'/api/v1/courses/create'))
+        self.assertTrue(
+            (send(post_data, '/api/v1/courses/create')["error"]) == "Required field name was not supplied")
 
     def tearDown(self):
         pass
@@ -184,6 +228,11 @@ class GetCourseTestCase(TestCase):
     def test_successful_get(self):
         gottin = get('/api/v1/courses/1')
         self.assertTrue(gottin['ok'])
+
+    def test_unsuccessful_get(self):
+        gottin = get('/api/v1/courses/3')
+        self.assertFalse(gottin['ok'])
+
 
     def teardown(self):
         pass
@@ -220,15 +269,50 @@ class CreateTextbookTestCase(TestCase):
         self.assertTrue(
             (send(post_data, '/api/v1/textbooks/create')["error"]) == "Requested Course object does not exist")
 
+
     def test_unsuccessful_post_with_wrong_pub_date(self):
         post_data = {}
         post_data['item_title'] = 'A'
         post_data['item_author'] = 'B'
         post_data['item_ISBN'] = 'ISBN1310'
         post_data['pub_date'] = 12/21/1221
-        #self.assertTrue((send(post_data, '/api/v1/textbooks/create')["ok"]))
         self.assertTrue(
             (send(post_data, '/api/v1/textbooks/create')["error"]) == "pub_date not in required format YYYY-MM-DD")
+
+    def test_unsuccessful_post_with_no_pub_date(self):
+        post_data = {}
+        post_data['item_title'] = 'A'
+        post_data['item_author'] = 'B'
+        post_data['item_ISBN'] = 'ISBN1310'
+        self.assertTrue(
+            (send(post_data, '/api/v1/textbooks/create')["error"]) == "Required field pub_date was not supplied")
+
+    def test_unsuccessful_post_with_no_title(self):
+        post_data = {}
+        post_data['item_author'] = 'Me'
+        post_data['course_key'] = 1
+        post_data['item_ISBN'] = 'ISBN111122310'
+        post_data['pub_date'] = '1979-01-12'
+        self.assertTrue(
+            (send(post_data, '/api/v1/textbooks/create')["error"]) == "Required field item_title was not supplied")
+
+    def test_unsuccessful_post_with_no_author(self):
+        post_data = {}
+        post_data['item_title'] = 'What if'
+        post_data['course_key'] = 1
+        post_data['item_ISBN'] = 'ISBN11112122310'
+        post_data['pub_date'] = '1999-01-12'
+        self.assertTrue(
+            (send(post_data, '/api/v1/textbooks/create')["error"]) == "Required field item_author was not supplied")
+
+    def test_unsuccessful_post_with_no_ISBN(self):
+        post_data = {}
+        post_data['item_title'] = 'What if'
+        post_data['item_author'] = 'XKCD guy'
+        post_data['course_key'] = 1
+        post_data['pub_date'] = '2014-01-12'
+        self.assertTrue(
+            (send(post_data, '/api/v1/textbooks/create')["error"]) == "Required field item_ISBN was not supplied")
 
     def teardown(self):
         pass
@@ -241,6 +325,10 @@ class GetTextbookTestCase(TestCase):
     def test_get_successful_textbook(self):
         gotton = get('/api/v1/textbooks/1')
         self.assertTrue(gotton['ok'])
+
+    def test_get_unsuccessful_textbook(self):
+        gotton = get('/api/v1/textbooks/4')
+        self.assertFalse(gotton['ok'])
 
     def tearDown(self):
         pass
@@ -257,8 +345,26 @@ class CreatelistingTestCase(TestCase):
         post_data['price'] = 100.2
         #post_data['actualprice'] = 100.2
         post_data['user_key'] = 1
-        post_data['condition'] = 'NEW'
+        post_data['condition'] = 'USED_GOOD'
         post_data['status'] = 'For Sale'
+        self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
+
+    def test_successful_list_with_default_condition(self):
+        post_data = {}
+        post_data['textbook_key'] = 1
+        post_data['price'] = 145
+        #post_data['actualprice'] = 100.2
+        post_data['user_key'] = 2
+        post_data['status'] = 'For Sale'
+        self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
+
+    def test_successful_list_with_default_status(self):
+        post_data = {}
+        post_data['textbook_key'] = 1
+        post_data['price'] = 145
+        #post_data['actualprice'] = 100.2
+        post_data['user_key'] = 2
+        post_data['condition'] = 'USED_GOOD'
         self.assertTrue((send(post_data, '/api/v1/listings/create')["ok"]))
 
     def test_unsuccessful_list_wrong_textbook_key(self):
@@ -293,16 +399,33 @@ class CreatelistingTestCase(TestCase):
         self.assertTrue(
             (send(post_data, '/api/v1/listings/create')["error"]) == "Price cannot be converted to a float")
 
+    def test_unsuccessful_list_price_DNE(self):
+        post_data = {}
+        post_data['textbook_key'] = 1
+        post_data['user_key'] = 1
+        post_data['condition'] = 'NEW'
+        post_data['status'] = 'For Sale'
+        self.assertTrue(
+            (send(post_data, '/api/v1/listings/create')["error"]) == "Required field price was not supplied")
+
     def test_unsuccessful_list_user_key_DNE(self):
         post_data = {}
         post_data['textbook_key'] = 1
         post_data['price'] = 100.2
-        # post_data['actualprice'] = 100.2
         post_data['user_key'] = 4
         post_data['condition'] = 'NEW'
         post_data['status'] = 'For Sale'
         self.assertTrue(
             (send(post_data, '/api/v1/listings/create')["error"]) == "Requested User object does not exist")
+
+    def test_unsuccessful_list_user_key_field_DNE(self):
+        post_data = {}
+        post_data['textbook_key'] = 1
+        post_data['price'] = 100.2
+        post_data['condition'] = 'NEW'
+        post_data['status'] = 'For Sale'
+        self.assertTrue(
+            (send(post_data, '/api/v1/listings/create')["error"]) == "Required field user_key was not supplied")
 
     def test_unsuccessful_list_condition_wrong(self):
         post_data = {}
@@ -340,6 +463,10 @@ class GetListingTestCase(TestCase):
     def test_get_successful_textbook(self):
         gottun = get('/api/v1/listings/1')
         self.assertTrue(gottun['ok'])
+
+    def test_get_unsuccessful_textbook(self):
+        gottun = get('/api/v1/listings/5')
+        self.assertFalse(gottun['ok'])
 
     def tearDown(self):
         pass
