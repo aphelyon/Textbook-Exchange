@@ -3,12 +3,14 @@ from myapp import models
 from django.http import HttpRequest
 import json
 
+
 # Create your tests here.
 def send(post_data, url):
     c = Client()
     response = c.post(url, post_data)
     json_obj = json.loads((response.content).decode("utf-8"))
     return json_obj
+
 
 def get(url):
     c = Client()
@@ -17,8 +19,16 @@ def get(url):
     return json_obj
 
 
+def post(url):
+    c = Client()
+    response = c.post(url)
+    json_obj = json.loads(response.content.decode("utf-8"))
+    return json_obj
+
+
 class CreateUserTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json',]
+
     def setUp(self):
         pass
 
@@ -103,8 +113,10 @@ class CreateUserTestCase(TestCase):
     def tearDown(self):
         pass
 
+
 class GetUserDetailsTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
+
     def setUp(self):
         pass
 
@@ -119,8 +131,28 @@ class GetUserDetailsTestCase(TestCase):
     def tearDown(self):
         pass
 
+
+class DeleteUserTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_successful_delete(self):
+        self.assertTrue(post('/api/v1/users/1/delete')['ok'])
+        self.assertFalse(get('/api/v1/users/1')['ok'])
+
+    def test_user_not_found(self):
+        self.assertFalse(get('/api/v1/users/4')['ok'])
+        self.assertFalse(post('/api/v1/users/4/delete')['ok'])
+
+    def tearDown(self):
+        pass
+
+
 class CreateProfTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
+
     def setUp(self):
         pass
 
@@ -145,10 +177,13 @@ class CreateProfTestCase(TestCase):
     def tearDown(self):
         pass
 
+
 class GetProfdetailtestcase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
+
     def setUp(self):
         pass
+
     def test_successful_get(self):
         gotten = get('/api/v1/professors/3')
         self.assertTrue(gotten['ok'])
@@ -159,6 +194,25 @@ class GetProfdetailtestcase(TestCase):
 
     def tearDown(self):
         pass
+
+
+class DeleteProfessorTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_successful_delete(self):
+        self.assertTrue(post('/api/v1/professors/2/delete')['ok'])
+        self.assertFalse(get('/api/v1/professors/2')['ok'])
+
+    def test_professor_not_found(self):
+        self.assertFalse(get('/api/v1/professors/4')['ok'])
+        self.assertFalse(post('/api/v1/professors/4/delete')['ok'])
+
+    def tearDown(self):
+        pass
+
 
 class CreateCourseTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
@@ -220,6 +274,7 @@ class CreateCourseTestCase(TestCase):
     def tearDown(self):
         pass
 
+
 class GetCourseTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
     def setUp(self):
@@ -233,9 +288,26 @@ class GetCourseTestCase(TestCase):
         gottin = get('/api/v1/courses/3')
         self.assertFalse(gottin['ok'])
 
-
     def teardown(self):
         pass
+
+
+class DeleteCourseTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+    def setUp(self):
+        pass
+
+    def test_successful_delete(self):
+        self.assertTrue(post('/api/v1/courses/1/delete')['ok'])
+        self.assertFalse(get('/api/v1/courses/1')['ok'])
+
+    def test_user_not_found(self):
+        self.assertFalse(get('/api/v1/courses/4')['ok'])
+        self.assertFalse(post('/api/v1/courses/4/delete')['ok'])
+
+    def tearDown(self):
+        pass
+
 
 class CreateTextbookTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
@@ -268,7 +340,6 @@ class CreateTextbookTestCase(TestCase):
         post_data['pub_date'] = '1979-11-12'
         self.assertTrue(
             (send(post_data, '/api/v1/textbooks/create')["error"]) == "Requested Course object does not exist")
-
 
     def test_unsuccessful_post_with_wrong_pub_date(self):
         post_data = {}
@@ -317,6 +388,7 @@ class CreateTextbookTestCase(TestCase):
     def teardown(self):
         pass
 
+
 class GetTextbookTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
     def setUp(self):
@@ -332,6 +404,24 @@ class GetTextbookTestCase(TestCase):
 
     def tearDown(self):
         pass
+
+
+class DeleteTextbookTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+    def setUp(self):
+        pass
+
+    def test_successful_delete(self):
+        self.assertTrue(post('/api/v1/textbooks/1/delete')['ok'])
+        self.assertFalse(get('/api/v1/textbooks/1')['ok'])
+
+    def test_user_not_found(self):
+        self.assertFalse(get('/api/v1/textbooks/4')['ok'])
+        self.assertFalse(post('/api/v1/textbooks/4/delete')['ok'])
+
+    def tearDown(self):
+        pass
+
 
 class CreatelistingTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
@@ -454,6 +544,7 @@ class CreatelistingTestCase(TestCase):
     def tearDown(self):
         pass
 
+
 class GetListingTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
 
@@ -467,6 +558,24 @@ class GetListingTestCase(TestCase):
     def test_get_unsuccessful_textbook(self):
         gottun = get('/api/v1/listings/5')
         self.assertFalse(gottun['ok'])
+
+    def tearDown(self):
+        pass
+
+
+class DeleteListingTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_successful_delete(self):
+        self.assertTrue(post('/api/v1/listings/1/delete')['ok'])
+        self.assertFalse(get('/api/v1/listings/1')['ok'])
+
+    def test_user_not_found(self):
+        self.assertFalse(get('/api/v1/listings/4')['ok'])
+        self.assertFalse(post('/api/v1/listings/4/delete')['ok'])
 
     def tearDown(self):
         pass
