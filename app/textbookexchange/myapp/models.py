@@ -12,7 +12,7 @@ class User(models.Model):
     # Maybe edit this to give the password? Not sure
     def as_json(self):
         return dict(first_name=self.first_name, last_name=self.last_name, username=self.username, email=self.email,
-                    userJoined=str(self.userJoined),pk=str(self.pk))
+                    userJoined=str(self.userJoined), pk=str(self.pk))
 
 
 class Professor(models.Model):
@@ -31,12 +31,13 @@ class Course(models.Model):
     department = models.CharField(max_length=100)
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
+    viewed_count = models.IntegerField(default=0)
 
     def as_json(self):
         if self.professor is not None:
-            return dict(identifier=self.identifier, department=self.department, professor=self.professor.as_json(), name=self.name, pk=str(self.pk))
+            return dict(identifier=self.identifier, department=self.department, professor=self.professor.as_json(), name=self.name, pk=str(self.pk), viewed_count=self.viewed_count)
         else:
-            return dict(identifier=self.identifier, department=self.department, name=self.name, pk=str(self.pk))
+            return dict(identifier=self.identifier, department=self.department, name=self.name, pk=str(self.pk), viewed_count=self.viewed_count)
 
 
 class Textbook(models.Model):
@@ -74,7 +75,10 @@ class Listing(models.Model):
             ('Sold', 'Sold')
             )
     status = models.CharField(max_length=20, choices=status_of_listing, default='For Sale')
+    viewed_count = models.IntegerField(default=0)
+    time_created = models.DateTimeField('Listing was created on this date', null=True)
 
     def as_json(self):
         return dict(item=self.item.as_json(), price_text=self.price_text, actualprice=self.actualprice,
-                    user=self.user.as_json(), condition=self.condition, status=self.status, pk=str(self.pk))
+                    user=self.user.as_json(), condition=self.condition, status=self.status, pk=str(self.pk),
+                    viewed_count=self.viewed_count, time_created=self.time_created)

@@ -102,7 +102,9 @@
     "actualprice": 1000.5,
     "user": 2,
     "condition": "NEW",
-    "status": "Negotiation"
+    "status": "Negotiation",
+    "viewed_count": 0,
+    "time_created": "2018-03-12T00:23:12.490Z"
   }
 }
 ]

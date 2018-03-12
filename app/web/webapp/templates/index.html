@@ -1,0 +1,35 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+<h1>Textbook Exchange</h1>
+
+  <p>Welcome to the <em>Chang, Murphy, & Zhang</em> Textbook Exchange.</p>
+    {% if most_viewed.ok %}
+        </br><h4>Most Popular Listings</h4>
+        <ul>
+        {% for listing in most_viewed.results %}
+            <li><a href="{% url 'webapp:listing' pk=listing.pk %}">{{ listing.item.title }} (${{ listing.price_text }})</a>
+                <ul><li>Seller: <a href="{% url 'webapp:user' pk=listing.user.pk %}">{{ listing.user.username }}</a></li></ul>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if most_viewed_courses.ok %}
+        </br><h4>Most Popular Courses</h4>
+        <ul>
+        {% for course in most_viewed_courses.results %}
+            <li><a href="{% url 'webapp:course' pk=course.pk %}">{{ course.identifier }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if newest.ok %}
+        </br><h4>Newest Listings</h4>
+        <ul>
+        {% for listing in newest.results %}
+            <li><a href="{% url 'webapp:listing' pk=listing.pk %}">{{ listing.item.title }} (${{ listing.price_text }})</a>
+                <ul><li>Seller: <a href="{% url 'webapp:user' pk=listing.user.pk %}">{{ listing.user.username }}</a></li></ul>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
