@@ -13,3 +13,5 @@ db
 
 .idea/
 
+app/textbookexchange/myapp/migrations/0002_auto_20180312_0132.py
+app/textbookexchange/myapp/migrations/0003_course_viewed_count.py

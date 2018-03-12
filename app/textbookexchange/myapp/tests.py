@@ -138,6 +138,30 @@ class GetUserDetailsTestCase(TestCase):
     def tearDown(self):
         pass
 
+class UpdateUserDeatilsTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_Update_info(self):
+        gottan = get('/api/v1/users/1')
+        post_data = {}
+        post_data['first_name'] = 'foo'
+        post_data['last_name'] = 'adsk'
+        post_data['username'] = 'm121hc6kp'
+        post_data['password'] = 'se132cret'
+        post_data['email'] = 'email112@gmail.com'
+        gottan2 = send(post_data, '/api/v1/users/1')
+        self.assertFalse(gottan['results']['first_name'] == gottan2['results']['first_name'])
+        self.assertFalse(gottan['results']['last_name'] == gottan2['results']['last_name'])
+        self.assertFalse(gottan['results']['username'] == gottan2['results']['username'])
+        self.assertFalse(gottan['results']['email'] == gottan2['results']['email'])
+
+
+    def tearDown(self):
+        pass
+
 
 class DeleteUserTestCase(TestCase):
     fixtures = ['myapp/fixtures/db.json', ]
@@ -207,6 +231,25 @@ class GetProfdetailtestcase(TestCase):
     def test_unsuccessful_get(self):
         gotten = get('/api/v1/professors/6')
         self.assertFalse(gotten['ok'])
+
+    def tearDown(self):
+        pass
+
+class UpdateProfessorDeatilsTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_Update_info(self):
+        gottan = get('/api/v1/professors/2')
+        post_data = {}
+        post_data['name'] = 'foo'
+        post_data['email'] = 'email112@gmail.com'
+        gottan2 = send(post_data, '/api/v1/professors/2')
+        self.assertFalse(gottan['results']['name'] == gottan2['results']['name'])
+        self.assertFalse(gottan['results']['email'] == gottan2['results']['email'])
+
 
     def tearDown(self):
         pass
@@ -319,6 +362,27 @@ class GetCourseTestCase(TestCase):
 
     def teardown(self):
         pass
+
+class UpdateCourseDeatilsTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_Update_info(self):
+        gottan = get('/api/v1/courses/1')
+        post_data = {}
+        post_data['identifier'] = 'foo'
+        post_data['department'] = 'adsk'
+        post_data['name'] = 'se132cret'
+        gottan2 = send(post_data, '/api/v1/courses/1')
+        self.assertFalse(gottan['results']['identifier'] == gottan2['results']['identifier'])
+        self.assertFalse(gottan['results']['department'] == gottan2['results']['department'])
+        self.assertFalse(gottan['results']['name'] == gottan2['results']['name'])
+
+    def tearDown(self):
+        pass
+
 
 
 class DeleteCourseTestCase(TestCase):
@@ -446,6 +510,30 @@ class GetTextbookTestCase(TestCase):
     def test_get_unsuccessful_textbook(self):
         gotton = get('/api/v1/textbooks/4')
         self.assertFalse(gotton['ok'])
+
+    def tearDown(self):
+        pass
+
+
+class UpdateTestbookrDeatilsTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_Update_info(self):
+        gottan = get('/api/v1/textbooks/1')
+        post_data = {}
+        post_data['item_title'] = 'foo'
+        post_data['item_author'] = 'adsk'
+        post_data['item_ISBN'] = '132'
+        post_data['pub_date'] = '1789-12-09'
+        gottan2 = send(post_data, '/api/v1/textbooks/1')
+        self.assertFalse(gottan['results']['title'] == gottan2['results']['title'])
+        self.assertFalse(gottan['results']['author'] == gottan2['results']['author'])
+        self.assertFalse(gottan['results']['ISBN'] == gottan2['results']['ISBN'])
+        self.assertFalse(gottan['results']['pub_date'] == gottan2['results']['pub_date'])
+
 
     def tearDown(self):
         pass
@@ -626,6 +714,31 @@ class GetListingTestCase(TestCase):
     def test_get_unsuccessful_textbook(self):
         gottun = get('/api/v1/listings/5')
         self.assertFalse(gottun['ok'])
+
+    def tearDown(self):
+        pass
+
+class UpdateListingDeatilsTestCase(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_Update_info(self):
+        gottan = get('/api/v1/listings/1')
+        post_data = {}
+        post_data['textbook_key'] = 1
+        post_data['price'] = 123.45
+        post_data['condition'] = 'USED_POOR'
+        post_data['status'] = 'Sold'
+        gottan2 = send(post_data, '/api/v1/listings/1')
+        print(gottan)
+        print(gottan2)
+        self.assertFalse(gottan['results']['item']['pk'] == gottan2['results']['item']['pk'])
+        self.assertFalse(gottan['results']['actualprice'] == gottan2['results']['actualprice'])
+        self.assertFalse(gottan['results']['condition'] == gottan2['results']['condition'])
+        self.assertFalse(gottan['results']['status'] == gottan2['results']['status'])
+
 
     def tearDown(self):
         pass
