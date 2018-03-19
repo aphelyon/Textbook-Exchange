@@ -87,5 +87,8 @@ class Listing(models.Model):
 
 class Authenticator(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    authenticator = models.CharField(max_length=64, primary_key=True)
+    authenticator = models.CharField(max_length=64, primary_key=True, unique=True)
     date_created = models.DateTimeField(default=datetime.now)
+
+    def as_json(self):
+        return dict(user_id=self.user_id.pk, authenticator=self.authenticator, date_created=self.date_created)

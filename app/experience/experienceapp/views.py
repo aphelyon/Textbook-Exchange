@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import urllib.request
-from urllib import parse
+import urllib.parse
 import json
 
 
@@ -61,3 +61,11 @@ def textbook_view(request, pk):
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
     listing_response = json.loads(urllib.request.urlopen(listing_request).read().decode('utf-8'))
     return JsonResponse({'textbook': response, 'listings': listing_response})
+
+
+def login(request):
+    login_request_url = 'http://models-api:8000/api/v1/users/login'
+    data = urllib.parse.urlencode({'username': request.POST.get('username'), 'password': request.POST.get('password')}).encode('utf-8')
+    login_request = urllib.request.Request(login_request_url, data)
+    response = json.loads(urllib.request.urlopen(login_request).read().decode('utf-8'))
+    return JsonResponse(response)

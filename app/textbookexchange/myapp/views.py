@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from myapp.models import *
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.core import serializers
 from django.views.decorators.http import require_POST
-import json
 import datetime
+from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+import os
+import hmac
+import textbookexchange.settings
 
 # Create your views here.
 
@@ -78,7 +77,7 @@ def create_user(request):
         except KeyError:
             return error(request, "Required field username was not supplied")
         try:
-            password = data['password']
+            password = make_password(data['password'])
         except KeyError:
             return error(request, "Required field password was not supplied")
         try:
@@ -97,6 +96,7 @@ def create_user(request):
     except ValueError:
         return error(request, "JSON object not sent as part of POST request")
 
+
 @require_POST
 def delete_user(request, pk):
     try:
@@ -104,6 +104,33 @@ def delete_user(request, pk):
         return success(request, {"Status": "200"})
     except User.DoesNotExist:
         return error(request, "Requested User object does not exist")
+
+
+def login_user(request):
+    try:
+        user_details = request.POST
+        user = User.objects.get(username=user_details.get('username'))
+
+        if check_password(user_details.get('password'), user.password):
+            # Create authenticator object
+            while True:
+                authenticator = hmac.new(
+                    key=textbookexchange.settings.SECRET_KEY.encode('utf-8'),
+                    msg=os.urandom(32),
+                    digestmod='sha256',
+                ).hexdigest()
+                if not Authenticator.objects.filter(authenticator=authenticator).exists():
+                    user_details = request.POST
+                    authenticator = Authenticator.objects.create(authenticator=authenticator, user_id=User.objects.get(
+                        username=user_details.get('username')))
+                    break
+
+            return success(request, {'authenticator': authenticator.as_json()})
+
+        else:
+            return error(request, "Username and password do not match")
+    except User.DoesNotExist:
+        return error(request, "Requested user object does not exist")
 
 
 # This method is for getting a professor's details and or updating them. I couldn't think of a better name to encompass
