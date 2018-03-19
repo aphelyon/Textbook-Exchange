@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class User(models.Model):
@@ -82,3 +83,9 @@ class Listing(models.Model):
         return dict(item=self.item.as_json(), price_text=self.price_text, actualprice=self.actualprice,
                     user=self.user.as_json(), condition=self.condition, status=self.status, pk=str(self.pk),
                     viewed_count=self.viewed_count, time_created=self.time_created)
+
+
+class Authenticator(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    authenticator = models.CharField(max_length=64, primary_key=True)
+    date_created = models.DateTimeField(default=datetime.now)
