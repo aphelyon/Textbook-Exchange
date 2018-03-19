@@ -8,4 +8,4 @@ register = template.Library()
 def cookies(context):
     request = context['request']
     result = request.COOKIES.get('auth', '')
-    return 'dude'
+    return result
