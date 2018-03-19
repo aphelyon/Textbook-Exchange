@@ -29,7 +29,13 @@
         <a href="">Courses</a>
           <a href="">Create a Listing</a>
         <a href="">Users</a>
+          {% load auth_cookie %}
+            {% cookies as cookie_exists %}
+          {% if not cookie_exists %}
         <a id="logOut" href="{% url 'webapp:login' %}">Log In</a>
+              {% else %}
+          <a id="logOut" href="">Log Out</a>
+      {% endif %}
       </div>
       {% endblock %}
       <div class = "panel panel-default container" >
