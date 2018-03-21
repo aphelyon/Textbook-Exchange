@@ -24,7 +24,6 @@ class listingForm(forms.Form):
         textbook_items.append(tuple)
     item = forms.CharField(widget=forms.Select(choices=textbook_items))
     price = forms.CharField(max_length=32)
-    user = forms.CharField()
     condition_of_textbook = (
         ('NEW', 'Brand new, unused Textbook'),
         ('USED_GOOD', 'Used, in good condition'),
