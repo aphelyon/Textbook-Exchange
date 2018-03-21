@@ -20,10 +20,18 @@ def listing_view(request, pk):
 
 
 def Create_listing_view(request):
+    get_textbooks_url = 'http://models-api:8000/api/v1/textbooks/get_all'
+    get_textbooks_request = urllib.request.Request(get_textbooks_url)
+    get_textbooks_response = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
-    create_listing_request = urllib.request.Request(create_listing_url)
-    create_listing_response = json.loads(urllib.request.urlopen(create_listing_request).read().decode('utf-8'))
-    return JsonResponse(create_listing_response)
+    #create_listing_request = urllib.request.Request(create_listing_url)
+    #create_listing_response = json.loads(urllib.request.urlopen(create_listing_request).read().decode('utf-8'))
+    data = urllib.parse.urlencode(
+        {'item': request.POST.get('item'), 'price': request.POST.get('price'), 'user': request.POST.get('user'),
+         'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
+    create_request = urllib.request.Request(create_listing_url, data)
+    response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
+    return JsonResponse({'create_listing': response, 'get_textbooks': get_textbooks_response})
 
 def homepage_view(request):
     most_viewed_listings_url = 'http://models-api:8000/api/v1/listings/most_viewed'

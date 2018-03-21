@@ -599,3 +599,9 @@ def newest_listings(request):
         return success(request, newest)
     else:
         return error(request, "No Listing objects exist")
+
+
+def get_all_textbooks(request):
+    get_textbooks = Textbook.objects.all()
+    all_the_books = [textbook.as_json() for textbook in get_textbooks]
+    return success(request, all_the_books)

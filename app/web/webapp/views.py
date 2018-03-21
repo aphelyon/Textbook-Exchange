@@ -52,10 +52,11 @@ def Create_listing_view(request):
     data = urllib.parse.urlencode({'item': item, 'price': price, 'user': user, 'condition': condition, 'status': status}).encode('utf-8')
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-    if not experience_response or not experience_response['ok']:
-        if experience_response['error'] == exp_srvc_errors.E_UNKNOWN_AUTH:
+    if not experience_response or not experience_response['create_listing']['ok']:
+        if experience_response['create_listing']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
             return HttpResponseRedirect(reverse("webapp:login"))
-    return render(request, "index.html")
+        return HttpResponseRedirect(reverse("webapp:index"))
+    return render(request, "create_listing_success.html")
 
 def user_profile_view(request, pk):
     experience_url = 'http://exp-api:8000/experience/users/' + str(pk)

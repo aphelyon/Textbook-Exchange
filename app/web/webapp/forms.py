@@ -24,7 +24,7 @@ class listingForm(forms.Form):
         textbook_tuple = \
             (textbook_details['textbook']['results']['pk'], textbook_details['textbook']['results']['title'])
         textbook_item.append(textbook_tuple)
-        i = i+1
+        i = i + 1
     item = forms.CharField(label='which book', widget=forms.Select(choices=textbook_item))
     price = forms.CharField(max_length=32)
     user = forms.CharField(max_length=32)

@@ -32,8 +32,10 @@ urlpatterns += [
 urlpatterns += [
     url(r'^v1/textbooks/create$', views.create_textbook, name='create-textbook-api'),  # Keep this on top, please
     url(r'^v1/textbooks/from_course/(?P<pk>[-\w]+)$', views.course_textbooks, name='get-course-textbooks'),
+    url(r'^v1/textbooks/get_all$', views.get_all_textbooks, name='get-all-textbook'),
     url(r'^v1/textbooks/(?P<pk>[-\w]+)$', views.details_textbook, name='get-textbook-api'),
     url(r'^v1/textbooks/(?P<pk>[-\w]+)/delete$', views.delete_textbook, name='delete-textbook-api'),
+
 ]
 
 urlpatterns += [
