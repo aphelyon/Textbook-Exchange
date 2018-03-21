@@ -6,6 +6,7 @@ import json
 from datetime import datetime
 import webapp.forms
 import http.cookies
+from ast import literal_eval
 
 
 # Create your views here.
@@ -108,7 +109,7 @@ def login(request):
         ret_form.add_error('username', 'Username and password do not match')
         return render(request, 'login.html', {'form': ret_form})
     next_page = ret_form.cleaned_data.get('next') or reverse('webapp:index')
-    authenticator = experience_response['results']['authenticator']['authenticator']
+    authenticator = str(experience_response['results']['authenticator']).replace(',','&')
     response = HttpResponseRedirect(next_page)
     response.set_cookie("auth", authenticator)
 
@@ -153,16 +154,16 @@ def signup(request):
             return HttpResponseRedirect(reverse("webapp:login"))
         else:
             response = HttpResponseRedirect(reverse('webapp:index'))
-            response.set_cookie('auth', experience_login_response['results']['authenticator']['authenticator'])
+            response.set_cookie('auth', str(experience_login_response['results']['authenticator']).replace(',', '&'))
             return response
 
 def logout(request):
     response = HttpResponseRedirect(reverse('webapp:index'))
     if request.method == "POST":
-        authenticator = request.COOKIES.get('auth')
+        authenticator = literal_eval(request.COOKIES.get('auth').replace('&',','))
         if authenticator:
             experience_url = 'http://exp-api:8000/experience/logout'
-            data = urllib.parse.urlencode({'authenticator': authenticator}).encode('utf-8')
+            data = urllib.parse.urlencode({'authenticator': authenticator['authenticator']}).encode('utf-8')
             experience_request = urllib.request.Request(experience_url, data)
             experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
             # Not sure if we care if the cookie is invalid
