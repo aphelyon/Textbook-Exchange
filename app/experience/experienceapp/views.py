@@ -75,3 +75,15 @@ def login(request):
     login_request = urllib.request.Request(login_request_url, data)
     response = json.loads(urllib.request.urlopen(login_request).read().decode('utf-8'))
     return JsonResponse(response)
+
+
+def logout(request):
+    database_request_url = 'http://models-api:8000/api/v1/authenticators/delete'
+    data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
+    database_request = urllib.request.Request(database_request_url, data)
+    response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
+    return JsonResponse(response)
+
+
+def signup(request):
+    pass

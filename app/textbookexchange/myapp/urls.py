@@ -11,6 +11,11 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    url(r'^v1/authenticators/check$', views.check_authenticator, name='check-authenticator-api'),
+    url(r'^v1/authenticators/delete$', views.delete_authenticator, name='delete-authenticator-api')
+]
+
+urlpatterns += [
     url(r'^v1/courses/create$', views.create_course, name='create-new-course-api'),  # Keep this on top, please
     url(r'^v1/courses/most_viewed$', views.most_viewed_courses, name='most-viewed-courses'),
     url(r'^v1/courses/(?P<pk>[-\w]+)/incrementCount$', views.view_count_courses, name='increment-course-count'),

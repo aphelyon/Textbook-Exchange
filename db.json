@@ -36,6 +36,18 @@
   }
 },
 {
+  "model": "myapp.user",
+  "pk": 4,
+  "fields": {
+    "first_name": "Tyler",
+    "last_name": "Handley",
+    "username": "tmh6de",
+    "password": "pbkdf2_sha256$30000$DKW9njQVXf2i$waVViPlC0Hg866wHOVwlK5ZNQ61y3Ohty2s88+12ao8=",
+    "email": "tmh6de@virginia.edu",
+    "userJoined": "2018-03-19T00:00:00Z"
+  }
+},
+{
   "model": "myapp.professor",
   "pk": 2,
   "fields": {
