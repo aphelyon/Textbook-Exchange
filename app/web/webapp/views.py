@@ -102,8 +102,9 @@ def login(request):
     if not experience_response or not experience_response['ok']:
         ret_form.add_error('username', 'Username and password do not match')
         return render(request, 'login.html', {'form': ret_form})
+    next_page = ret_form.cleaned_data.get('next') or reverse('webapp:index')
     authenticator = experience_response['results']['authenticator']['authenticator']
-    response = HttpResponseRedirect(reverse('webapp:index'))
+    response = HttpResponseRedirect(next_page)
     response.set_cookie("auth", authenticator)
 
     return response
@@ -121,6 +122,34 @@ def signup(request):
         ret_form.add_error('confirm_password', 'Passwords must match.')
         return render(request, 'signup.html', {'form': ret_form})
 
+    first_name = ret_form.cleaned_data['first_name']
+    last_name = ret_form.cleaned_data['last_name']
+    email = ret_form.cleaned_data['email']
+    username = ret_form.cleaned_data['username']
+    password = ret_form.cleaned_data['password']
+    experience_url = 'http://exp-api:8000/experience/signup'
+    datadict = {'first_name': first_name, 'last_name': last_name, 'email': email, 'username': username,
+                'password': password}
+    data = urllib.parse.urlencode(datadict).encode('utf-8')
+    experience_request = urllib.request.Request(experience_url, data)
+    experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    if not experience_response['ok']:
+        if "for key 'email'" in experience_response['error']:
+            ret_form.add_error('email', "Email provided is already in use")
+        elif "for key 'username'" in experience_response['error']:
+            ret_form.add_error('username', "Username provided is already in use")
+        return render(request, 'signup.html', {'form': ret_form})
+    else:
+        experience_login_url = 'http://exp-api:8000/experience/login'
+        data = urllib.parse.urlencode({'username': username, 'password': password}).encode('utf-8')
+        experience_request = urllib.request.Request(experience_login_url, data)
+        experience_login_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        if not experience_login_response or not experience_login_response['ok']:
+            return HttpResponseRedirect(reverse("webapp:login"))
+        else:
+            response = HttpResponseRedirect(reverse('webapp:index'))
+            response.set_cookie('auth', experience_login_response['results']['authenticator']['authenticator'])
+            return response
 
 def logout(request):
     response = HttpResponseRedirect(reverse('webapp:index'))

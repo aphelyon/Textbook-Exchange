@@ -2,10 +2,11 @@
 
 {% block content %}
     <h1>Login to the Textbook Exchange</h1>
-<form method="post">
+<p><form method="post">
 {% csrf_token %}
 {{ form.as_p }}
 <button type="submit" class="login btn btn-default">Login</button>
-</form>
+</form></p>
+    <p>Don't have an account yet? <a href="{% url 'webapp:signup' %}">Sign up here.</a></p>
 
 {% endblock %}

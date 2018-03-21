@@ -77,6 +77,8 @@ def create_user(request):
             username = data['username']
         except KeyError:
             return error(request, "Required field username was not supplied")
+        except IntegrityError:
+            return error(request, "Username provided is already in use")
         try:
             password = make_password(data['password'])
         except KeyError:

@@ -10,4 +10,5 @@ urlpatterns += [url(r'^listings/(?P<pk>[-\w]+)$', views.listing_view, name='get-
                 url(r'^textbooks/(?P<pk>[-\w]+)$', views.textbook_view, name='get-textbook'),
                 url(r'^home$', views.homepage_view, name='homepage-desktop'),
                 url(r'^login$', views.login, name='login'),
-                url(r'^logout$', views.logout, name='logout')]
+                url(r'^logout$', views.logout, name='logout'),
+                url(r'^signup$', views.signup, name='signup')]
