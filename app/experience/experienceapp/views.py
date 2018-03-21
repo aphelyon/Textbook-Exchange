@@ -19,6 +19,12 @@ def listing_view(request, pk):
     return JsonResponse(response)
 
 
+def Create_listing_view(request):
+    create_listing_url = 'http://models-api:8000/api/v1/listings/create'
+    create_listing_request = urllib.request.Request(create_listing_url)
+    create_listing_response = json.loads(urllib.request.urlopen(create_listing_request).read().decode('utf-8'))
+    return JsonResponse(create_listing_response)
+
 def homepage_view(request):
     most_viewed_listings_url = 'http://models-api:8000/api/v1/listings/most_viewed'
     most_viewed_courses_url = 'http://models-api:8000/api/v1/courses/most_viewed'
