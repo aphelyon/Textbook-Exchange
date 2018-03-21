@@ -55,7 +55,7 @@ def Create_listing_view(request):
     if not experience_response or not experience_response['ok']:
         if experience_response['error'] == exp_srvc_errors.E_UNKNOWN_AUTH:
             return HttpResponseRedirect(reverse("webapp:login"))
-    return render(request, "create_listing_success.html")
+    return render(request, "index.html")
 
 def user_profile_view(request, pk):
     experience_url = 'http://exp-api:8000/experience/users/' + str(pk)
