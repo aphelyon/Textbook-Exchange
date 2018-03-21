@@ -95,14 +95,14 @@ def signup(request):
 
 
 def logout(request):
-    if request.method == "GET":
-        return HttpResponseRedirect(reverse('webapp:index'))
-    authorizer = request.COOKIES.get('auth')
-    if authorizer:
-        experience_url = 'http://exp-api:8000/experience/logout'
-        data = urllib.parse.urlencode({'authorizer': authorizer}).encode('utf-8')
-        experience_request = urllib.request.Request(experience_url, data)
-        experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-        return JsonResponse(experience_response)
-    else:
-        return HttpResponseRedirect(reverse('webapp:index'))
+    response = HttpResponseRedirect(reverse('webapp:index'))
+    if request.method == "POST":
+        authenticator = request.COOKIES.get('auth')
+        if authenticator:
+            experience_url = 'http://exp-api:8000/experience/logout'
+            data = urllib.parse.urlencode({'authenticator': authenticator}).encode('utf-8')
+            experience_request = urllib.request.Request(experience_url, data)
+            experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+            # Not sure if we care if the cookie is invalid
+            response.delete_cookie('auth')
+    return response

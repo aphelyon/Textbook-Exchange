@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 import os
 import hmac
 import textbookexchange.settings
+import json
 
 # Create your views here.
 
@@ -112,25 +113,45 @@ def login_user(request):
         user = User.objects.get(username=user_details.get('username'))
 
         if check_password(user_details.get('password'), user.password):
-            # Create authenticator object
-            while True:
-                authenticator = hmac.new(
-                    key=textbookexchange.settings.SECRET_KEY.encode('utf-8'),
-                    msg=os.urandom(32),
-                    digestmod='sha256',
-                ).hexdigest()
-                if not Authenticator.objects.filter(authenticator=authenticator).exists():
-                    user_details = request.POST
-                    authenticator = Authenticator.objects.create(authenticator=authenticator, user_id=User.objects.get(
-                        username=user_details.get('username')))
-                    break
-
-            return success(request, {'authenticator': authenticator.as_json()})
+            authenticator = create_authenticator(request)
+            return success(request, {'authenticator': authenticator})
 
         else:
             return error(request, "Username and password do not match")
     except User.DoesNotExist:
         return error(request, "Requested user object does not exist")
+
+
+def create_authenticator(request):
+    """Creates an authenticator object for a logged-in or signed-up user.
+    Cannot be accessed from outside the models layer -- may need to change this"""
+    while True:
+        authenticator = hmac.new(
+            key=textbookexchange.settings.SECRET_KEY.encode('utf-8'),
+            msg=os.urandom(32),
+            digestmod='sha256',
+        ).hexdigest()
+        if not Authenticator.objects.filter(authenticator=authenticator).exists():
+            user_details = request.POST
+            authenticator = Authenticator.objects.create(authenticator=authenticator, user_id=User.objects.get(
+                username=user_details.get('username')))
+            break
+    return authenticator.as_json()
+
+
+def check_authenticator(request):
+    if Authenticator.objects.filter(authenticator=request.POST.get('authenticator')).exists():
+        return success(request)
+    else:
+        return error(request, "Requested authenticator object does not exist")
+
+
+def delete_authenticator(request):
+    try:
+        Authenticator.objects.get(authenticator=request.POST.get('authenticator')).delete()
+        return success(request)
+    except Authenticator.DoesNotExist:
+        return error(request, "Requested authenticator object does not exist")
 
 
 # This method is for getting a professor's details and or updating them. I couldn't think of a better name to encompass

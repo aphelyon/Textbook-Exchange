@@ -34,7 +34,10 @@
           {% if not cookie_exists %}
         <a id="logOut" href="{% url 'webapp:login' %}">Log In</a>
               {% else %}
-          <a id="logOut" href="">Log Out</a>
+              <!--This is the only way I could think to make a post request for our logout method while keeping style-->
+              <!--consistent. Basically, you use a fake form that links to our logout view that our Logout link submits-->
+              <form id="logout_form" action="{% url 'webapp:logout' %}" method="post">{% csrf_token %}</form>
+          <a id="logOut" href="javascript:{}" onclick="document.getElementById('logout_form').submit()">Log Out</a>
       {% endif %}
       </div>
       {% endblock %}
