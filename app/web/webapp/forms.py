@@ -1,5 +1,11 @@
 from django import forms
-
+from webapp import views
+from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.http import JsonResponse
+import urllib.request
+import urllib.parse
+import json
+from datetime import datetime
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
@@ -7,11 +13,29 @@ class LoginForm(forms.Form):
 
 
 class listingForm(forms.Form):
-    item = forms.CharField(max_length=32)
+    textbook_item = []
+    experience_url = 'http://exp-api:8000/experience/textbooks/' + str(2)
+    experience_request = urllib.request.Request(experience_url)
+    textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    textbook_tuple = \
+        (textbook_details['textbook']['results']['pk'], textbook_details['textbook']['results']['title'])
+    textbook_item.append(textbook_tuple)
+    item = forms.CharField(label='which book bruh', widget=forms.Select(choices=textbook_item))
     price = forms.CharField(max_length=32)
     user = forms.CharField(max_length=32)
-    condition = forms.CharField(max_length=20)
-    status = forms.CharField(max_length=20)
+    condition_of_textbook = (
+        ('NEW', 'Brand new, unused Textbook'),
+        ('USED_GOOD', 'Used, in good condition'),
+        ('USED_OKAY', 'Used, in okay condition'),
+        ('USED_POOR', 'Used, in poor condition')
+    )
+    condition = forms.CharField(label='condition of the item', widget=forms.Select(choices=condition_of_textbook))
+    status_of_listing = (
+        ('For Sale', 'For Sale'),
+        ('Negotiation', 'Under Negotiation'),
+        ('Sold', 'Sold')
+    )
+    status = forms.CharField(label='status of the item', widget=forms.Select(choices=status_of_listing))
 
 
 
