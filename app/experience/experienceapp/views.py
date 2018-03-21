@@ -27,7 +27,7 @@ def Create_listing_view(request):
     #create_listing_request = urllib.request.Request(create_listing_url)
     #create_listing_response = json.loads(urllib.request.urlopen(create_listing_request).read().decode('utf-8'))
     data = urllib.parse.urlencode(
-        {'item': request.POST.get('item'), 'price': request.POST.get('price'), 'user': request.POST.get('user'),
+        {'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key': request.POST.get('user'),
          'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
     create_request = urllib.request.Request(create_listing_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
