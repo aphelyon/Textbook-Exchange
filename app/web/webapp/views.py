@@ -64,8 +64,8 @@ def Create_listing_view(request):
     if not experience_response or not experience_response['create_listing']['ok']:
         if experience_response['create_listing']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
             return HttpResponseRedirect(reverse("webapp:login"))
-        #return render(request, "create_listing_fail.html", {'form': listing_form})
-        return experience_response
+        return render(request, "create_listing_fail.html", {'form': listing_form})
+        #return experience_response
     return listing_view(request, experience_response['create_listing']['results']['pk'])
 
 def user_profile_view(request, pk):
