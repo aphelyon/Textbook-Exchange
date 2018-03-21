@@ -1,9 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.http import JsonResponse
 import urllib.request
 import urllib.parse
 import json
 from datetime import datetime
 import webapp.forms
+import http.cookies
 
 
 # Create your views here.
@@ -61,7 +63,7 @@ def login(request):
     ret_form = webapp.forms.LoginForm(request.POST)
 
     if not ret_form.is_valid():
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'login.html', {'form': ret_form})
 
     username = ret_form.cleaned_data['username']
     password = ret_form.cleaned_data['password']
@@ -70,9 +72,37 @@ def login(request):
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['ok']:
-        return render(request, 'login.html', {'form': form})
-    authenticator = experience_response['results']['authenticator']
+        ret_form.add_error('username', 'Username and password do not match')
+        return render(request, 'login.html', {'form': ret_form})
+    authenticator = experience_response['results']['authenticator']['authenticator']
     response = HttpResponseRedirect(reverse('webapp:index'))
     response.set_cookie("auth", authenticator)
 
     return response
+
+
+def signup(request):
+    form = webapp.forms.SignUpForm()
+    if request.method == "GET":
+        return render(request, 'signup.html', {'form': form})
+
+    ret_form = webapp.forms.SignUpForm(request.POST)
+    if not ret_form.is_valid():
+        return render(request, 'signup.html', {'form': ret_form})
+    if ret_form.cleaned_data['password'] != ret_form.cleaned_data['confirm_password']:
+        ret_form.add_error('confirm_password', 'Passwords must match.')
+        return render(request, 'signup.html', {'form': ret_form})
+
+
+def logout(request):
+    if request.method == "GET":
+        return HttpResponseRedirect(reverse('webapp:index'))
+    authorizer = request.COOKIES.get('auth')
+    if authorizer:
+        experience_url = 'http://exp-api:8000/experience/logout'
+        data = urllib.parse.urlencode({'authorizer': authorizer}).encode('utf-8')
+        experience_request = urllib.request.Request(experience_url, data)
+        experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        return JsonResponse(experience_response)
+    else:
+        return HttpResponseRedirect(reverse('webapp:index'))
