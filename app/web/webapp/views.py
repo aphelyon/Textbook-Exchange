@@ -29,6 +29,11 @@ def listing_view(request, pk):
                                                                            ['pub_date'][:-6], "%Y-%m-%d %H:%M:%S")
     return render(request, 'listing_detail.html', listing_details)
 
+
+#def get_user_pk(request):
+
+
+
 def Create_listing_view(request):
     auth = request.COOKIES.get('auth')
     listing_form = webapp.forms.listingForm()

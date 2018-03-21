@@ -13,21 +13,18 @@ class LoginForm(forms.Form):
 
 
 class listingForm(forms.Form):
-    textbook_item = []
-    i = 1
-    while True:
-        experience_url = 'http://exp-api:8000/experience/textbooks/' + str(i)
-        experience_request = urllib.request.Request(experience_url)
-        textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-        if textbook_details['listings']['ok'] == False:
-            break
-        textbook_tuple = \
-            (textbook_details['textbook']['results']['pk'], textbook_details['textbook']['results']['title'])
-        textbook_item.append(textbook_tuple)
-        i = i + 1
-    item = forms.CharField(label='which book', widget=forms.Select(choices=textbook_item))
+    textbook_items = []
+    experience_url = 'http://exp-api:8000/experience/get_all'
+    experience_request = urllib.request.Request(experience_url)
+    textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    for textbook in textbook_details['get_textbooks']['results']:
+        pk = textbook['pk']
+        title = textbook['title']
+        tuple = (pk, title)
+        textbook_items.append(tuple)
+    item = forms.CharField(widget=forms.Select(choices=textbook_items))
     price = forms.CharField(max_length=32)
-    user = forms.CharField(max_length=32)
+    user = forms.CharField()
     condition_of_textbook = (
         ('NEW', 'Brand new, unused Textbook'),
         ('USED_GOOD', 'Used, in good condition'),
@@ -41,7 +38,6 @@ class listingForm(forms.Form):
         ('Sold', 'Sold')
     )
     status = forms.CharField(label='status of the item', widget=forms.Select(choices=status_of_listing))
-
 
 
 class SignUpForm(forms.Form):

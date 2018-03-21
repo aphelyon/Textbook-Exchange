@@ -19,10 +19,14 @@ def listing_view(request, pk):
     return JsonResponse(response)
 
 
-def Create_listing_view(request):
+def get_textbook_view(request):
     get_textbooks_url = 'http://models-api:8000/api/v1/textbooks/get_all'
     get_textbooks_request = urllib.request.Request(get_textbooks_url)
     get_textbooks_response = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
+    return JsonResponse({'get_textbooks': get_textbooks_response})
+
+
+def Create_listing_view(request):
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
     #create_listing_request = urllib.request.Request(create_listing_url)
     #create_listing_response = json.loads(urllib.request.urlopen(create_listing_request).read().decode('utf-8'))
@@ -31,7 +35,8 @@ def Create_listing_view(request):
          'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
     create_request = urllib.request.Request(create_listing_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
-    return JsonResponse({'create_listing': response, 'get_textbooks': get_textbooks_response})
+    return JsonResponse({'create_listing': response})
+
 
 def homepage_view(request):
     most_viewed_listings_url = 'http://models-api:8000/api/v1/listings/most_viewed'
