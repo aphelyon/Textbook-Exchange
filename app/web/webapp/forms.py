@@ -14,12 +14,13 @@ class LoginForm(forms.Form):
 
 class listingForm(forms.Form):
     textbook_item = []
-    experience_url = 'http://exp-api:8000/experience/textbooks/' + str(2)
-    experience_request = urllib.request.Request(experience_url)
-    textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-    textbook_tuple = \
-        (textbook_details['textbook']['results']['pk'], textbook_details['textbook']['results']['title'])
-    textbook_item.append(textbook_tuple)
+    for i in range(1,3):
+        experience_url = 'http://exp-api:8000/experience/textbooks/' + str(i)
+        experience_request = urllib.request.Request(experience_url)
+        textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        textbook_tuple = \
+            (textbook_details['textbook']['results']['pk'], textbook_details['textbook']['results']['title'])
+        textbook_item.append(textbook_tuple)
     item = forms.CharField(label='which book bruh', widget=forms.Select(choices=textbook_item))
     price = forms.CharField(max_length=32)
     user = forms.CharField(max_length=32)

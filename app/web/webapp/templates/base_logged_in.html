@@ -27,7 +27,7 @@
         <a href="">My Listings</a>
         <a href="">Professors</a>
         <a href="">Courses</a>
-          <a href="">Create a Listing</a>
+        <a href="{% url 'webapp:create_listing' %}">Create a Listing</a>
         <a href="">Users</a>
           {% load auth_cookie %}
             {% cookies as cookie_exists %}
