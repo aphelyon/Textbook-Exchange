@@ -34,15 +34,24 @@ def listing_view(request, pk):
 #def get_user_pk(request):
 
 
+def create_course_view(request):
+    auth = request.COOKIES.get('auth')
+    course_form = webapp.forms.courseForm()
+    if not auth:
+        return HttpResponseRedirect(reverse("webapp:login"))
+    if request.method == 'GET':
+        return render(request, 'course.html', {'form': course_form})
+
+    f = webapp.forms.listingForm(request.POST)
+    if not f.is_valid():
+        return render(request, 'course.html', {'form': course_form})
 
 def create_textbook_view(request):
     auth = request.COOKIES.get('auth')
     textbook_form = webapp.forms.textbookForm()
     if not auth:
-        # Handle user not logged in while trying to create a listing
         return HttpResponseRedirect(reverse("webapp:login"))
     if request.method == 'GET':
-        # Return to form page
         return render(request, 'textbook.html', {'form': textbook_form})
 
     f = webapp.forms.listingForm(request.POST)
