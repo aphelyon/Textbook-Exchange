@@ -1,0 +1,13 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+    {% load humanize %}
+	<h1>Create A Professor</h1>
+	<form method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit" class="login btn btn-default">Create Professor</button>
+	</form>
+
+
+{% endblock %}

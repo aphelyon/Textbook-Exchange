@@ -612,3 +612,8 @@ def get_all_courses(request):
     get_courses = Course.objects.all()
     all_the_courses = [course.as_json() for course in get_courses]
     return success(request, all_the_courses)
+
+def get_all_professors(request):
+    get_professors = Professor.objects.all()
+    all_the_professors = [professor.as_json() for professor in get_professors]
+    return success(request, all_the_professors)

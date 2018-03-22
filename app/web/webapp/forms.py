@@ -67,5 +67,17 @@ class courseForm(forms.Form):
     name = forms.CharField(max_length=100)
     identifier = forms.CharField(max_length=32)
     department = forms.CharField(max_length=100)
-    professor = forms.CharField(max_length=100)
+    experience_url = 'http://exp-api:8000/experience/get_all_professors'
+    experience_request = urllib.request.Request(experience_url)
+    professor_items = []
+    professor_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    for professor in professor_details['get_professors']['results']:
+        pk = professor['pk']
+        name = professor['name']
+        tuple = (pk, name)
+        professor_items.append(tuple)
+    professor = forms.CharField(widget=forms.Select(choices=professor_items))
 
+class professorForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField(max_length=100)
