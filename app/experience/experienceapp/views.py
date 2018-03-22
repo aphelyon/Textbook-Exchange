@@ -49,6 +49,15 @@ def Create_listing_view(request):
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_listing': response})
 
+def create_course_view(request):
+    create_listing_url = 'http://models-api:8000/api/v1/courses/create'
+    data = urllib.parse.urlencode(
+        {'name': request.POST.get('name'), 'identifier': request.POST.get('identifier'), 'department': request.POST.get('department'),
+         'professor_key': request.POST.get('professor')}).encode('utf-8')
+    create_request = urllib.request.Request(create_listing_url, data)
+    response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
+    return JsonResponse({'create_course': response})
+
 def create_textbook_view(request):
     create_textbook_url = 'http://models-api:8000/api/v1/textbooks/create'
     data = urllib.parse.urlencode(

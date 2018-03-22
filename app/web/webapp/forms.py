@@ -79,8 +79,8 @@ class courseForm(forms.Form):
     professor_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     for professor in professor_details['get_professors']['results']:
         pk = professor['pk']
-        name = professor['name']
-        tuple = (pk, name)
+        prof_name = professor['name']
+        tuple = (pk, prof_name)
         professor_items.append(tuple)
     professor = forms.CharField(widget=forms.Select(choices=professor_items))
 

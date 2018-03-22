@@ -45,7 +45,21 @@ def create_course_view(request):
     f = webapp.forms.courseForm(request.POST)
     if not f.is_valid():
         return render(request, 'course.html', {'form': course_form})
-
+    name = f.cleaned_data['name']
+    identifier = f.cleaned_data['identifier']
+    department = f.cleaned_data['department']
+    professor = f.cleaned_data['professor']
+    experience_url = 'http://exp-api:8000/experience/courses'
+    data = urllib.parse.urlencode(
+        {'name': name, 'identifier': identifier, 'department': department, 'professor': professor}).encode('utf-8')
+    experience_request = urllib.request.Request(experience_url, data)
+    experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    if not experience_response or not experience_response['create_course']['ok']:
+        if experience_response['create_course']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+            return HttpResponseRedirect(reverse("webapp:login"))
+        return render(request, "create_course_fail.html", {'form': course_form})
+        # return experience_response
+    return render(request, "create_course_success.html", {'form': course_form})
 def create_textbook_view(request):
     auth = request.COOKIES.get('auth')
     textbook_form = webapp.forms.textbookForm()
