@@ -46,7 +46,7 @@ class Textbook(models.Model):
     item_author = models.CharField(max_length=200)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     item_ISBN = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateField('date published')
 
     """Return a dictionary containing each component of the model with its respective label"""
     def as_json(self):

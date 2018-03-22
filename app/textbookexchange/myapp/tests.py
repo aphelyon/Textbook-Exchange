@@ -174,8 +174,8 @@ class DeleteUserTestCase(TestCase):
         self.assertFalse(get('/api/v1/users/1')['ok'])
 
     def test_user_not_found(self):
-        self.assertFalse(get('/api/v1/users/4')['ok'])
-        self.assertFalse(post('/api/v1/users/4/delete')['ok'])
+        self.assertFalse(get('/api/v1/users/5')['ok'])
+        self.assertFalse(post('/api/v1/users/5/delete')['ok'])
 
     def tearDown(self):
         pass
@@ -420,7 +420,7 @@ class CreateTextbookTestCase(TestCase):
         self.assertEqual(response2['title'], 'A')
         self.assertEqual(response2['author'], 'B')
         self.assertEqual(response2['ISBN'], 'ISBN1310')
-        self.assertEqual(response2['pub_date'], '1979-10-12 00:00:00+00:00')
+        self.assertEqual(response2['pub_date'], '1979-10-12')
 
     def test_successful_post_with_course(self):
         post_data = {}
@@ -436,7 +436,7 @@ class CreateTextbookTestCase(TestCase):
         self.assertEqual(response2['title'], 'Hitchhikerguide')
         self.assertEqual(response2['author'], 'IDK')
         self.assertEqual(response2['ISBN'], 'ISBN1310')
-        self.assertEqual(response2['pub_date'], '1979-10-12 00:00:00+00:00')
+        self.assertEqual(response2['pub_date'], '1979-10-12')
         self.assertEqual(response2['course']['pk'], "1")
 
 
@@ -549,8 +549,8 @@ class DeleteTextbookTestCase(TestCase):
         self.assertFalse(get('/api/v1/textbooks/1')['ok'])
 
     def test_user_not_found(self):
-        self.assertFalse(get('/api/v1/textbooks/4')['ok'])
-        self.assertFalse(post('/api/v1/textbooks/4/delete')['ok'])
+        self.assertFalse(get('/api/v1/textbooks/5')['ok'])
+        self.assertFalse(post('/api/v1/textbooks/5/delete')['ok'])
 
     def tearDown(self):
         pass
@@ -658,7 +658,7 @@ class CreatelistingTestCase(TestCase):
         post_data = {}
         post_data['textbook_key'] = 1
         post_data['price'] = 100.2
-        post_data['user_key'] = 4
+        post_data['user_key'] = 5
         post_data['condition'] = 'NEW'
         post_data['status'] = 'For Sale'
         self.assertTrue(
