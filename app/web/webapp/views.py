@@ -42,7 +42,7 @@ def create_course_view(request):
     if request.method == 'GET':
         return render(request, 'course.html', {'form': course_form})
 
-    f = webapp.forms.listingForm(request.POST)
+    f = webapp.forms.courseForm(request.POST)
     if not f.is_valid():
         return render(request, 'course.html', {'form': course_form})
 
@@ -54,9 +54,35 @@ def create_textbook_view(request):
     if request.method == 'GET':
         return render(request, 'textbook.html', {'form': textbook_form})
 
-    f = webapp.forms.listingForm(request.POST)
+    f = webapp.forms.textbookForm(request.POST)
     if not f.is_valid():
         return render(request, 'textbook.html', {'form': textbook_form})
+
+def create_professor_view(request):
+    auth = request.COOKIES.get('auth')
+    professor_form = webapp.forms.professorForm()
+    if not auth:
+        return HttpResponseRedirect(reverse("webapp:login"))
+    if request.method == 'GET':
+        return render(request, 'professor.html', {'form': professor_form})
+
+    f = webapp.forms.professorForm(request.POST)
+    if not f.is_valid():
+        return render(request, 'professor.html', {'form': professor_form})
+
+    name = f.cleaned_data['name']
+    email = f.cleaned_data['email']
+    experience_url = 'http://exp-api:8000/experience/professors'
+    data = urllib.parse.urlencode(
+        {'name': name, 'email': email}).encode('utf-8')
+    experience_request = urllib.request.Request(experience_url, data)
+    experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    if not experience_response or not experience_response['create_professor']['ok']:
+        if experience_response['create_professor']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+            return HttpResponseRedirect(reverse("webapp:login"))
+        return render(request, "create_professor_fail.html", {'form': professor_form})
+        # return experience_response
+    return render(request, "create_professor_success.html", {'form': professor_form})
 
 def Create_listing_view(request):
     auth = request.COOKIES.get('auth')

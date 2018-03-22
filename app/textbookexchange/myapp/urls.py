@@ -26,6 +26,7 @@ urlpatterns += [
 
 urlpatterns += [
     url(r'^v1/professors/create$', views.create_professor, name='create-new-professor-api'),  # Keep this on top, please
+    url(r'^v1/professors/get_all$', views.get_all_professors, name='get-all-professor'),
     url(r'^v1/professors/(?P<pk>[-\w]+)$', views.details_professor, name='get-professor-api'),
     url(r'^v1/professors/(?P<pk>[-\w]+)/delete$', views.delete_professor, name='delete-professor-api'),
 ]

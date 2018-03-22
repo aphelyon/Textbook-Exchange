@@ -31,6 +31,12 @@ def get_courses_view(request):
     get_courses_response = json.loads(urllib.request.urlopen(get_courses_request).read().decode('utf-8'))
     return JsonResponse({'get_courses': get_courses_response})
 
+def get_professors_view(request):
+    get_professors_url = 'http://models-api:8000/api/v1/professors/get_all'
+    get_professors_request = urllib.request.Request(get_professors_url)
+    get_professors_response = json.loads(urllib.request.urlopen(get_professors_request).read().decode('utf-8'))
+    return JsonResponse({'get_professors': get_professors_response})
+
 
 def Create_listing_view(request):
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
@@ -43,6 +49,22 @@ def Create_listing_view(request):
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_listing': response})
 
+def create_textbook_view(request):
+    create_textbook_url = 'http://models-api:8000/api/v1/textbooks/create'
+    data = urllib.parse.urlencode(
+        {'professor_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key': request.POST.get('user'),
+         'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
+    create_request = urllib.request.Request(create_textbook_url, data)
+    response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
+    return JsonResponse({'create_textbook': response})
+
+def create_professor_view(request):
+    create_professor_url = 'http://models-api:8000/api/v1/professors/create'
+    data = urllib.parse.urlencode(
+        {'name': request.POST.get('name'), 'email': request.POST.get('email'), 'status': request.POST.get('status')}).encode('utf-8')
+    create_request = urllib.request.Request(create_professor_url, data)
+    response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
+    return JsonResponse({'create_professor': response})
 
 def homepage_view(request):
     most_viewed_listings_url = 'http://models-api:8000/api/v1/listings/most_viewed'
