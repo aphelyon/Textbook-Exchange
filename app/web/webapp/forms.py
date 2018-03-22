@@ -14,18 +14,20 @@ class LoginForm(forms.Form):
 class textbookForm(forms.Form):
     title = forms.CharField(max_length=200)
     author = forms.CharField(max_length=200)
-    course_items = []
-    experience_url = 'http://exp-api:8000/experience/get_all_courses'
-    experience_request = urllib.request.Request(experience_url)
-    course_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-    for course in course_details['get_courses']['results']:
-        pk = course['pk']
-        identifier = course['identifier']
-        tuple = (pk, identifier)
-        course_items.append(tuple)
-    course = forms.CharField(widget=forms.Select(choices=course_items))
     isbn = forms.CharField(max_length=200, label='ISBN Number')
     pub_date = forms.CharField(max_length=200, label='Publication Date')
+    def __init__(self, *args, **kwargs):
+        super(textbookForm, self, ).__init__(*args, **kwargs)
+        course_items = []
+        experience_url = 'http://exp-api:8000/experience/get_all_courses'
+        experience_request = urllib.request.Request(experience_url)
+        course_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        for course in course_details['get_courses']['results']:
+            pk = course['pk']
+            identifier = course['identifier']
+            tuple = (pk, identifier)
+            course_items.append(tuple)
+        self.fields['course'] = forms.CharField(widget=forms.Select(choices=course_items))
     #pub_date = forms.DateField('Publication Date', widget=forms.SelectDateWidget(years=range(2019,1970, -1)))
 
     
@@ -74,16 +76,18 @@ class courseForm(forms.Form):
     name = forms.CharField(max_length=100)
     identifier = forms.CharField(max_length=32)
     department = forms.CharField(max_length=100)
-    experience_url = 'http://exp-api:8000/experience/get_all_professors'
-    experience_request = urllib.request.Request(experience_url)
-    professor_items = []
-    professor_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-    for professor in professor_details['get_professors']['results']:
-        pk = professor['pk']
-        prof_name = professor['name']
-        tuple = (pk, prof_name)
-        professor_items.append(tuple)
-    professor = forms.CharField(widget=forms.Select(choices=professor_items))
+    def __init__(self, *args, **kwargs):
+        super(courseForm, self, ).__init__(*args, **kwargs)
+        experience_url = 'http://exp-api:8000/experience/get_all_professors'
+        experience_request = urllib.request.Request(experience_url)
+        professor_items = []
+        professor_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        for professor in professor_details['get_professors']['results']:
+            pk = professor['pk']
+            prof_name = professor['name']
+            tuple = (pk, prof_name)
+            professor_items.append(tuple)
+        self.fields['professor'] = forms.CharField(widget=forms.Select(choices=professor_items))
 
 class professorForm(forms.Form):
     name = forms.CharField(max_length=100)
