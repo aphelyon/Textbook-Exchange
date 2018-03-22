@@ -19,6 +19,7 @@ urlpatterns += [
     url(r'^v1/courses/create$', views.create_course, name='create-new-course-api'),  # Keep this on top, please
     url(r'^v1/courses/most_viewed$', views.most_viewed_courses, name='most-viewed-courses'),
     url(r'^v1/courses/(?P<pk>[-\w]+)/incrementCount$', views.view_count_courses, name='increment-course-count'),
+    url(r'^v1/courses/get_all$', views.get_all_courses, name='get-all-courses'),
     url(r'^v1/courses/(?P<pk>[-\w]+)$', views.details_course, name='get-course-api'),
     url(r'^v1/courses/(?P<pk>[-\w]+)/delete$', views.delete_course, name='delete-course-api'),
 ]

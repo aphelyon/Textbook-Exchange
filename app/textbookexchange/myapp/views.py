@@ -607,3 +607,8 @@ def get_all_textbooks(request):
     get_textbooks = Textbook.objects.all()
     all_the_books = [textbook.as_json() for textbook in get_textbooks]
     return success(request, all_the_books)
+
+def get_all_courses(request):
+    get_courses = Course.objects.all()
+    all_the_courses = [course.as_json() for course in get_courses]
+    return success(request, all_the_courses)

@@ -35,6 +35,20 @@ def listing_view(request, pk):
 
 
 
+def create_textbook_view(request):
+    auth = request.COOKIES.get('auth')
+    textbook_form = webapp.forms.textbookForm()
+    if not auth:
+        # Handle user not logged in while trying to create a listing
+        return HttpResponseRedirect(reverse("webapp:login"))
+    if request.method == 'GET':
+        # Return to form page
+        return render(request, 'textbook.html', {'form': textbook_form})
+
+    f = webapp.forms.listingForm(request.POST)
+    if not f.is_valid():
+        return render(request, 'textbook.html', {'form': textbook_form})
+
 def Create_listing_view(request):
     auth = request.COOKIES.get('auth')
     listing_form = webapp.forms.listingForm()

@@ -25,6 +25,12 @@ def get_textbook_view(request):
     get_textbooks_response = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
     return JsonResponse({'get_textbooks': get_textbooks_response})
 
+def get_courses_view(request):
+    get_courses_url = 'http://models-api:8000/api/v1/courses/get_all'
+    get_courses_request = urllib.request.Request(get_courses_url)
+    get_courses_response = json.loads(urllib.request.urlopen(get_courses_request).read().decode('utf-8'))
+    return JsonResponse({'get_courses': get_courses_response})
+
 
 def Create_listing_view(request):
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'

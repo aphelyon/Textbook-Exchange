@@ -11,7 +11,23 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
     password = forms.CharField(max_length=256, widget=forms.PasswordInput())
 
+class textbookForm(forms.Form):
+    title = forms.CharField(max_length=200)
+    author = forms.CharField(max_length=200)
+    course_items = []
+    experience_url = 'http://exp-api:8000/experience/get_all_courses'
+    experience_request = urllib.request.Request(experience_url)
+    course_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    for course in course_details['get_courses']['results']:
+        pk = course['pk']
+        identifier = course['identifier']
+        tuple = (pk, identifier)
+        course_items.append(tuple)
+    course = forms.CharField(widget=forms.Select(choices=course_items))
+    isbn = forms.CharField(max_length=200, label='ISBN Number')
+    pub_date = forms.DateTimeField('Publication Date', widget=forms.SelectDateWidget())
 
+    
 class listingForm(forms.Form):
     textbook_items = []
     experience_url = 'http://exp-api:8000/experience/get_all'
