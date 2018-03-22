@@ -29,8 +29,6 @@
         <a href="">Courses</a>
         <a href="{% url 'webapp:create_listing' %}">Create Listing</a>
          <a href="{% url 'webapp:create_textbook' %}">Create Textbook</a>
-        <a href="{% url 'webapp:create_course' %}">Create Course</a>
-        <a href="{% url 'webapp:create_professor' %}">Create Professor</a>
           {% load auth_cookie %}
             {% cookies as cookie_exists %}
           {% if not cookie_exists %}

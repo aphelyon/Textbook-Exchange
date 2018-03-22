@@ -6,6 +6,7 @@
 	<form method="post">
 	{% csrf_token %}
 	{{ form.as_p }}
+		<p>Don't see your textbook on here? <a href="{% url 'webapp:create_textbook' %}">Create it here.</a></p>
 	<button type="submit" class="login btn btn-default">Submit Listing</button>
 	</form>
 
