@@ -29,16 +29,8 @@ class textbookForm(forms.Form):
 
     
 class listingForm(forms.Form):
-    textbook_items = []
-    experience_url = 'http://exp-api:8000/experience/get_all'
-    experience_request = urllib.request.Request(experience_url)
-    textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
-    for textbook in textbook_details['get_textbooks']['results']:
-        pk = textbook['pk']
-        title = textbook['title']
-        tuple = (pk, title)
-        textbook_items.append(tuple)
-    item = forms.CharField(widget=forms.Select(choices=textbook_items))
+
+    item = forms.CharField(widget=forms.Select(choices=[]))
     price = forms.CharField(max_length=32)
     condition_of_textbook = (
         ('NEW', 'Brand new, unused Textbook'),
@@ -53,6 +45,20 @@ class listingForm(forms.Form):
         ('Sold', 'Sold')
     )
     status = forms.CharField(label='status of the item', widget=forms.Select(choices=status_of_listing))
+
+    def __init__(self):
+        super(listingForm, self).__init__()
+        textbook_items = []
+        experience_url = 'http://exp-api:8000/experience/get_all'
+        experience_request = urllib.request.Request(experience_url)
+        textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        for textbook in textbook_details['get_textbooks']['results']:
+            pk = textbook['pk']
+            title = textbook['title']
+            tuple = (pk, title)
+            textbook_items.append(tuple)
+        self.fields['item'] = forms.CharField(widget=forms.Select(choices=textbook_items))
+
 
 
 class SignUpForm(forms.Form):
