@@ -25,7 +25,7 @@ class textbookForm(forms.Form):
         course_items.append(tuple)
     course = forms.CharField(widget=forms.Select(choices=course_items))
     isbn = forms.CharField(max_length=200, label='ISBN Number')
-    pub_date = forms.DateTimeField('Publication Date', widget=forms.SelectDateWidget(years=range(2019,1970, -1)))
+    pub_date = forms.DateField('Publication Date', widget=forms.SelectDateWidget(years=range(2019,1970, -1)))
 
     
 class listingForm(forms.Form):

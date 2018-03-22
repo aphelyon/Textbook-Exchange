@@ -60,6 +60,7 @@ def create_course_view(request):
         return render(request, "create_course_fail.html", {'form': course_form})
         # return experience_response
     return render(request, "create_course_success.html", {'form': course_form})
+
 def create_textbook_view(request):
     auth = request.COOKIES.get('auth')
     textbook_form = webapp.forms.textbookForm()
@@ -71,6 +72,23 @@ def create_textbook_view(request):
     f = webapp.forms.textbookForm(request.POST)
     if not f.is_valid():
         return render(request, 'textbook.html', {'form': textbook_form})
+
+    title = f.cleaned_data['title']
+    author = f.cleaned_data['author']
+    course = f.cleaned_data['course']
+    isbn = f.cleaned_data['isbn']
+    pub_date = f.cleaned_data['pub_date']
+    experience_url = 'http://exp-api:8000/experience/textbooks'
+    data = urllib.parse.urlencode(
+        {'title': title, 'author': author, 'course': course, 'isbn': isbn, 'pub_date': pub_date}).encode('utf-8')
+    experience_request = urllib.request.Request(experience_url, data)
+    experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    if not experience_response or not experience_response['create_textbook']['ok']:
+        if experience_response['create_textbook']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+            return HttpResponseRedirect(reverse("webapp:login"))
+        return render(request, "create_textbook_fail.html", {'form': textbook_form})
+        # return experience_response
+    return render(request, "create_textbook_success.html", {'form': textbook_form})
 
 def create_professor_view(request):
     auth = request.COOKIES.get('auth')

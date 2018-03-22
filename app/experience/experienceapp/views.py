@@ -61,8 +61,8 @@ def create_course_view(request):
 def create_textbook_view(request):
     create_textbook_url = 'http://models-api:8000/api/v1/textbooks/create'
     data = urllib.parse.urlencode(
-        {'professor_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key': request.POST.get('user'),
-         'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
+        {'title': request.POST.get('title'), 'author': request.POST.get('author'), 'course_key': request.POST.get('course'),
+         'isbn': request.POST.get('isbn'), 'pub_date': request.POST.get('pub_date')}).encode('utf-8')
     create_request = urllib.request.Request(create_textbook_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_textbook': response})
