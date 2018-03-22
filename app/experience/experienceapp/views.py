@@ -132,3 +132,12 @@ def signup(request):
     database_request = urllib.request.Request(database_request_url, data)
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
     return JsonResponse(response)
+
+
+def nav_bar(request):
+    authenticator_check_url = 'http://models-api:8000/api/v1/authenticators/check'
+    data = urllib.parse.urlencode(request.POST).encode('utf-8')
+    authenticator_request = urllib.request.Request(authenticator_check_url, data)
+    response = json.loads(urllib.request.urlopen(authenticator_request).read().decode('utf-8'))
+    return JsonResponse(response)
+
