@@ -46,8 +46,8 @@ class listingForm(forms.Form):
     )
     status = forms.CharField(label='status of the item', widget=forms.Select(choices=status_of_listing))
 
-    def __init__(self):
-        super(listingForm, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(listingForm, self,).__init__(*args, **kwargs)
         textbook_items = []
         experience_url = 'http://exp-api:8000/experience/get_all'
         experience_request = urllib.request.Request(experience_url)
