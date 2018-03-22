@@ -27,7 +27,7 @@ def listing_view(request, pk):
     # Set up our date to be a datetime object, so that it will actually look pretty to the user
     if 'results' in listing_details:
         listing_details['results']['item']['pub_date'] = datetime.strptime(listing_details['results']['item']
-                                                                           ['pub_date'][:-6], "%Y-%m-%d %H:%M:%S")
+                                                                           ['pub_date'], "%Y-%m-%d")
     return render(request, 'listing_detail.html', listing_details)
 
 
@@ -55,7 +55,7 @@ def create_course_view(request):
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_course']['ok']:
-        if experience_response['create_course']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+        if experience_response['create_course']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_course_fail.html", {'form': course_form})
         # return experience_response
@@ -84,7 +84,7 @@ def create_textbook_view(request):
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_textbook']['ok']:
-        if experience_response['create_textbook']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+        if experience_response['create_textbook']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_textbook_fail.html", {'form': textbook_form})
         # return experience_response
@@ -110,7 +110,7 @@ def create_professor_view(request):
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_professor']['ok']:
-        if experience_response['create_professor']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+        if experience_response['create_professor']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_professor_fail.html", {'form': professor_form})
         # return experience_response
@@ -143,7 +143,7 @@ def Create_listing_view(request):
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_listing']['ok']:
-        if experience_response['create_listing']['error'] == 'exp_srvc_errors.E_UNKNOWN_AUTH':
+        if experience_response['create_listing']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_listing_fail.html", {'form': listing_form})
         #return experience_response
@@ -170,7 +170,7 @@ def textbook_view(request, pk):
     experience_request = urllib.request.Request(experience_url)
     textbook_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if 'textbook' in textbook_details:
-        textbook_details['textbook']['results']['pub_date'] = datetime.strptime(textbook_details['textbook']['results']['pub_date'][:-6], "%Y-%m-%d %H:%M:%S")
+        textbook_details['textbook']['results']['pub_date'] = datetime.strptime(textbook_details['textbook']['results']['pub_date'], "%Y-%m-%d")
     return render(request, 'textbook_detail.html', textbook_details)
 
 
