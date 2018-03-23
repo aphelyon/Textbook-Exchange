@@ -39,9 +39,14 @@ def get_professors_view(request):
 
 
 def Create_listing_view(request):
+    authenticate_url = 'http://models-api:8000/api/v1/authenticators/check'
+    authenticate_data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
+    authenticate_request = urllib.request.Request(authenticate_url, authenticate_data)
+    authenticate_response = json.loads(urllib.request.urlopen(authenticate_request).read().decode('utf-8'))
+    if not authenticate_response['ok']:
+        # The current user is not authenticated to create a new textbook, don't let the request go through
+        return JsonResponse({'create_listing': authenticate_response})
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
-    #create_listing_request = urllib.request.Request(create_listing_url)
-    #create_listing_response = json.loads(urllib.request.urlopen(create_listing_request).read().decode('utf-8'))
     data = urllib.parse.urlencode(
         {'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key': request.POST.get('user'),
          'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
