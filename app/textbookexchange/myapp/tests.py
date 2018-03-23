@@ -893,3 +893,24 @@ class ReverseLookup(TestCase):
 
     def tearDown(self):
         pass
+
+
+class Authenticator(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_authenticator(self):
+        jsonObjectAuthenticator = send({'username': 'tmh6de', 'password': 'cool_password'}, '/api/v1/users/login')
+        self.assertTrue(jsonObjectAuthenticator['ok'])
+        self.assertEqual(jsonObjectAuthenticator['results']['authenticator']['user_id'], 4)
+        jsonObjectCheck = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']['authenticator']}, '/api/v1/authenticators/check')
+        self.assertTrue(jsonObjectCheck['ok'])
+        # Change authenticator to invalid value to check if an invalid authenticator fails
+        jsonObjectAuthenticator['results']['authenticator']['authenticator'] = '12345'
+        jsonObjectCheck2 = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']['authenticator']}, '/api/v1/authenticators/check')
+        self.assertFalse(jsonObjectCheck2['ok'])
+
+    def tearDown(self):
+        pass
