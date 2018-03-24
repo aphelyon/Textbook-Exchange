@@ -912,5 +912,17 @@ class Authenticator(TestCase):
         jsonObjectCheck2 = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']['authenticator']}, '/api/v1/authenticators/check')
         self.assertFalse(jsonObjectCheck2['ok'])
 
+    def test_delete_authenticator(self):
+        jsonObjectAuthenticator = send({'username': 'tmh6de', 'password': 'cool_password'}, '/api/v1/users/login')
+        self.assertTrue(jsonObjectAuthenticator['ok'])  # Just make sure the authenticator is returned fine
+        jsonObjectDeleteResponse = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']
+                                        ['authenticator']}, '/api/v1/authenticators/delete')
+        self.assertTrue((jsonObjectDeleteResponse['ok']))
+        # If we send it again, we should get a "false" result, because the object is already gone
+        jsonObjectDeleteResponse2 = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']
+                              ['authenticator']}, '/api/v1/authenticators/delete')
+        self.assertFalse(jsonObjectDeleteResponse2['ok'])
+        self.assertEqual(jsonObjectDeleteResponse2['error'], "Requested authenticator object does not exist")
+
     def tearDown(self):
         pass
