@@ -25,8 +25,8 @@
         <a href="{% url 'webapp:index' %}">Home</a>
         <a href="">Listings</a>
         <a href="">My Listings</a>
-        <a href="">Professors</a>
-        <a href="">Courses</a>
+        <a href="{% url 'webapp:create_professor' %}">Professors</a>
+        <a href="{% url 'webapp:create_course' %}">Courses</a>
         <a href="{% url 'webapp:create_listing' %}">Create Listing</a>
          <a href="{% url 'webapp:create_textbook' %}">Create Textbook</a>
           {% load auth_cookie %}
