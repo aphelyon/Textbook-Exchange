@@ -116,6 +116,7 @@ def create_professor_view(request):
         # return experience_response
     return render(request, "create_professor_success.html", {'form': professor_form})
 
+
 def Create_listing_view(request):
     auth = request.COOKIES.get('auth')
     listing_form = webapp.forms.listingForm()
@@ -130,7 +131,7 @@ def Create_listing_view(request):
 
     f = webapp.forms.listingForm(request.POST)
     if not f.is_valid():
-        return render(request, 'listing.html', {'form': listing_form})
+        return render(request, 'listing.html', {'form': f})
 
     authenticator = literal_eval(request.COOKIES.get('auth').replace('&',','))
     k = authenticator['user_id']
@@ -141,14 +142,20 @@ def Create_listing_view(request):
     condition = f.cleaned_data['condition']
     status = f.cleaned_data['status']
     experience_url = 'http://exp-api:8000/experience/listings'
-    data = urllib.parse.urlencode({'item': item, 'price': price, 'condition': condition, 'user': user, 'status': status, 'authenticator': auth['authenticator']}).encode('utf-8')
+    data = urllib.parse.urlencode({'item': item, 'price': price, 'condition': condition, 'user': user, 'status': status,
+                                   'authenticator': auth['authenticator']}).encode('utf-8')
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_listing']['ok']:
         if experience_response['create_listing']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
-        return render(request, "create_listing_fail.html", {'form': listing_form})
+        elif experience_response['create_listing']['error'] == "Price cannot be converted to a float":
+            f.add_error('price', 'Please input a decimal number')
+            return render(request, 'listing.html', {'form': f})
+        else:
+            return render(request, "listing.html", {'form': f})
     return listing_view(request, experience_response['create_listing']['results']['pk'])
+
 
 def user_profile_view(request, pk):
     experience_url = 'http://exp-api:8000/experience/users/' + str(pk)
