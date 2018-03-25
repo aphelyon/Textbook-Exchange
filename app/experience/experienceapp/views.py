@@ -25,11 +25,13 @@ def get_textbook_view(request):
     get_textbooks_response = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
     return JsonResponse({'get_textbooks': get_textbooks_response})
 
+
 def get_courses_view(request):
     get_courses_url = 'http://models-api:8000/api/v1/courses/get_all'
     get_courses_request = urllib.request.Request(get_courses_url)
     get_courses_response = json.loads(urllib.request.urlopen(get_courses_request).read().decode('utf-8'))
     return JsonResponse({'get_courses': get_courses_response})
+
 
 def get_professors_view(request):
     get_professors_url = 'http://models-api:8000/api/v1/professors/get_all'
@@ -44,7 +46,7 @@ def Create_listing_view(request):
     authenticate_request = urllib.request.Request(authenticate_url, authenticate_data)
     authenticate_response = json.loads(urllib.request.urlopen(authenticate_request).read().decode('utf-8'))
     if not authenticate_response['ok']:
-        # The current user is not authenticated to create a new textbook, don't let the request go through
+        # The current user is not authenticated to create a new listing, don't let the request go through
         return JsonResponse({'create_listing': authenticate_response})
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
     data = urllib.parse.urlencode(
@@ -54,7 +56,15 @@ def Create_listing_view(request):
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_listing': response})
 
+
 def create_course_view(request):
+    authenticate_url = 'http://models-api:8000/api/v1/authenticators/check'
+    authenticate_data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
+    authenticate_request = urllib.request.Request(authenticate_url, authenticate_data)
+    authenticate_response = json.loads(urllib.request.urlopen(authenticate_request).read().decode('utf-8'))
+    if not authenticate_response['ok']:
+        # The current user is not authenticated to create a new listing, don't let the request go through
+        return JsonResponse({'create_course': authenticate_response})
     create_listing_url = 'http://models-api:8000/api/v1/courses/create'
     data = urllib.parse.urlencode(
         {'name': request.POST.get('name'), 'identifier': request.POST.get('identifier'), 'department': request.POST.get('department'),
@@ -63,7 +73,15 @@ def create_course_view(request):
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_course': response})
 
+
 def create_textbook_view(request):
+    authenticate_url = 'http://models-api:8000/api/v1/authenticators/check'
+    authenticate_data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
+    authenticate_request = urllib.request.Request(authenticate_url, authenticate_data)
+    authenticate_response = json.loads(urllib.request.urlopen(authenticate_request).read().decode('utf-8'))
+    if not authenticate_response['ok']:
+        # The current user is not authenticated to create a new listing, don't let the request go through
+        return JsonResponse({'create_textbook': authenticate_response})
     create_textbook_url = 'http://models-api:8000/api/v1/textbooks/create'
     data = urllib.parse.urlencode(
         {'item_title': request.POST.get('title'), 'item_author': request.POST.get('author'), 'course_key': request.POST.get('course'),
@@ -72,13 +90,22 @@ def create_textbook_view(request):
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_textbook': response})
 
+
 def create_professor_view(request):
+    authenticate_url = 'http://models-api:8000/api/v1/authenticators/check'
+    authenticate_data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
+    authenticate_request = urllib.request.Request(authenticate_url, authenticate_data)
+    authenticate_response = json.loads(urllib.request.urlopen(authenticate_request).read().decode('utf-8'))
+    if not authenticate_response['ok']:
+        # The current user is not authenticated to create a new listing, don't let the request go through
+        return JsonResponse({'create_professor': authenticate_response})
     create_professor_url = 'http://models-api:8000/api/v1/professors/create'
     data = urllib.parse.urlencode(
         {'name': request.POST.get('name'), 'email': request.POST.get('email'), 'status': request.POST.get('status')}).encode('utf-8')
     create_request = urllib.request.Request(create_professor_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_professor': response})
+
 
 def homepage_view(request):
     most_viewed_listings_url = 'http://models-api:8000/api/v1/listings/most_viewed'

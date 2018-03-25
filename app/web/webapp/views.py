@@ -31,14 +31,13 @@ def listing_view(request, pk):
     return render(request, 'listing_detail.html', listing_details)
 
 
-#def get_user_pk(request):
-
-
 def create_course_view(request):
     auth = request.COOKIES.get('auth')
     course_form = webapp.forms.courseForm()
     if not auth:
         return HttpResponseRedirect(reverse("webapp:login"))
+    else:
+        auth = literal_eval(auth.replace('&', ','))
     if request.method == 'GET':
         return render(request, 'course.html', {'form': course_form})
 
@@ -51,14 +50,13 @@ def create_course_view(request):
     professor = f.cleaned_data['professor']
     experience_url = 'http://exp-api:8000/experience/courses'
     data = urllib.parse.urlencode(
-        {'name': name, 'identifier': identifier, 'department': department, 'professor': professor}).encode('utf-8')
+        {'name': name, 'identifier': identifier, 'department': department, 'professor': professor, 'authenticator': auth['authenticator']}).encode('utf-8')
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_course']['ok']:
         if experience_response['create_course']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_course_fail.html", {'form': course_form})
-        # return experience_response
     return render(request, "create_course_success.html", {'form': course_form})
 
 def create_textbook_view(request):
@@ -66,6 +64,8 @@ def create_textbook_view(request):
     textbook_form = webapp.forms.textbookForm()
     if not auth:
         return HttpResponseRedirect(reverse("webapp:login"))
+    else:
+        auth = literal_eval(auth.replace('&', ','))
     if request.method == 'GET':
         return render(request, 'textbook.html', {'form': textbook_form})
 
@@ -80,14 +80,13 @@ def create_textbook_view(request):
     pub_date = f.cleaned_data['pub_date']
     experience_url = 'http://exp-api:8000/experience/textbooks'
     data = urllib.parse.urlencode(
-        {'title': title, 'author': author, 'course': course, 'isbn': isbn, 'pub_date': pub_date}).encode('utf-8')
+        {'title': title, 'author': author, 'course': course, 'isbn': isbn, 'pub_date': pub_date, 'authenticator': auth['authenticator']}).encode('utf-8')
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_textbook']['ok']:
         if experience_response['create_textbook']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_textbook_fail.html", {'form': textbook_form})
-        # return experience_response
     return render(request, "create_textbook_success.html", {'form': textbook_form})
 
 def create_professor_view(request):
@@ -95,6 +94,8 @@ def create_professor_view(request):
     professor_form = webapp.forms.professorForm()
     if not auth:
         return HttpResponseRedirect(reverse("webapp:login"))
+    else:
+        auth = literal_eval(auth.replace('&', ','))
     if request.method == 'GET':
         return render(request, 'professor.html', {'form': professor_form})
 
@@ -106,14 +107,13 @@ def create_professor_view(request):
     email = f.cleaned_data['email']
     experience_url = 'http://exp-api:8000/experience/professors'
     data = urllib.parse.urlencode(
-        {'name': name, 'email': email}).encode('utf-8')
+        {'name': name, 'email': email, 'authenticator': auth['authenticator']}).encode('utf-8')
     experience_request = urllib.request.Request(experience_url, data)
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_professor']['ok']:
         if experience_response['create_professor']['error'] == 'Requested authenticator object does not exist':
             return HttpResponseRedirect(reverse("webapp:login"))
         return render(request, "create_professor_fail.html", {'form': professor_form})
-        # return experience_response
     return render(request, "create_professor_success.html", {'form': professor_form})
 
 
@@ -125,6 +125,7 @@ def Create_listing_view(request):
         return HttpResponseRedirect(reverse("webapp:login"))
     else:
         auth = literal_eval(auth.replace('&', ','))
+        
     if request.method == 'GET':
         # Return to form page
         return render(request, 'listing.html', {'form': listing_form})
@@ -133,9 +134,7 @@ def Create_listing_view(request):
     if not f.is_valid():
         return render(request, 'listing.html', {'form': f})
 
-    authenticator = literal_eval(request.COOKIES.get('auth').replace('&',','))
-    k = authenticator['user_id']
-
+    k = auth['user_id']
     item = f.cleaned_data['item']
     price = f.cleaned_data['price']
     user = k
