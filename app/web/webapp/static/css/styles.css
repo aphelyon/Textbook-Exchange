@@ -48,3 +48,8 @@ ul li ul li{
     font-size: smaller;
     list-style-type: none;
 }
+
+.errorlist
+    {
+        color: red;
+    }
