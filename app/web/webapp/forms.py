@@ -34,7 +34,7 @@ class textbookForm(forms.Form):
 class listingForm(forms.Form):
 
     item = forms.CharField(widget=forms.Select(choices=[]))
-    price = forms.CharField(max_length=32)
+    price = forms.DecimalField(decimal_places=2)
     condition_of_textbook = (
         ('NEW', 'Brand new, unused Textbook'),
         ('USED_GOOD', 'Used, in good condition'),
