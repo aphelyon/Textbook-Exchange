@@ -15,7 +15,7 @@ class textbookForm(forms.Form):
     title = forms.CharField(max_length=200)
     author = forms.CharField(max_length=200)
     isbn = forms.CharField(max_length=200, label='ISBN Number')
-    pub_date = forms.CharField(max_length=200, label='Publication Date')
+    pub_date = forms.DateField(label='Publication Date')
     def __init__(self, *args, **kwargs):
         super(textbookForm, self, ).__init__(*args, **kwargs)
         course_items = []
