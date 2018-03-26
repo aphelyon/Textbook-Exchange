@@ -147,7 +147,7 @@ def Create_listing_view(request):
     experience_response = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     if not experience_response or not experience_response['create_listing']['ok']:
         if experience_response['create_listing']['error'] == 'Requested authenticator object does not exist':
-            return HttpResponseRedirect(reverse("webapp:login"))
+            return HttpResponseRedirect(reverse("webapp:login") + "?next=" + reverse("webapp:create_listing"))
         elif experience_response['create_listing']['error'] == "Price cannot be converted to a float":
             f.add_error('price', 'Please input a decimal number')
             return render(request, 'listing.html', {'form': f})
