@@ -125,7 +125,7 @@
     "item_author": "Douglass Adams",
     "course": 1,
     "item_ISBN": "123456789",
-    "pub_date": "1979-10-12T00:00:00Z"
+    "pub_date": "1979-10-12"
   }
 },
 {
@@ -136,7 +136,7 @@
     "item_author": "Randall Munroe",
     "course": null,
     "item_ISBN": "987654321",
-    "pub_date": "2014-09-02T00:00:00Z"
+    "pub_date": "2014-09-02"
   }
 },
 {

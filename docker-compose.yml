@@ -3,10 +3,10 @@ models:
     external_links:
       -  mysql:db
     volumes:
-      - .:/app
+      - ./app/textbookexchange:/app
     ports:
       - "8001:8000"
-    command: bash -c "python ./app/textbookexchange/manage.py makemigrations myapp && python ./app/textbookexchange/manage.py makemigrations && python ./app/textbookexchange/manage.py migrate && python ./app/textbookexchange/manage.py loaddata dbWithMoreStuff.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/textbookexchange/textbookexchange/wsgi.py"
+    command: bash -c "python manage.py makemigrations myapp && python manage.py makemigrations && python manage.py migrate && python manage.py loaddata dbWithMoreStuff.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./textbookexchange/wsgi.py"
 
 exp:
     image: tp33/django
@@ -15,8 +15,8 @@ exp:
     ports:
       - "8002:8000"
     volumes:
-      - .:/app
-    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/experience/experience/wsgi.py"
+      - ./app/experience:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./experience/wsgi.py"
 
 web:
     image: tp33/django
@@ -25,5 +25,5 @@ web:
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
-    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./app/web/web/wsgi.py"
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"

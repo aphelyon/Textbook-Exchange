@@ -1,0 +1,14 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+    {% load humanize %}
+	<h2><font color="red">Textbook creation unsuccessful</font></h2>
+	<h1>Create a Textbook</h1>
+	<form method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit" class="login btn btn-default">Create Textbook</button>
+	</form>
+
+
+{% endblock %}

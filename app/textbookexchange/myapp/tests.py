@@ -174,8 +174,8 @@ class DeleteUserTestCase(TestCase):
         self.assertFalse(get('/api/v1/users/1')['ok'])
 
     def test_user_not_found(self):
-        self.assertFalse(get('/api/v1/users/4')['ok'])
-        self.assertFalse(post('/api/v1/users/4/delete')['ok'])
+        self.assertFalse(get('/api/v1/users/5')['ok'])
+        self.assertFalse(post('/api/v1/users/5/delete')['ok'])
 
     def tearDown(self):
         pass
@@ -420,7 +420,7 @@ class CreateTextbookTestCase(TestCase):
         self.assertEqual(response2['title'], 'A')
         self.assertEqual(response2['author'], 'B')
         self.assertEqual(response2['ISBN'], 'ISBN1310')
-        self.assertEqual(response2['pub_date'], '1979-10-12 00:00:00+00:00')
+        self.assertEqual(response2['pub_date'], '1979-10-12')
 
     def test_successful_post_with_course(self):
         post_data = {}
@@ -436,7 +436,7 @@ class CreateTextbookTestCase(TestCase):
         self.assertEqual(response2['title'], 'Hitchhikerguide')
         self.assertEqual(response2['author'], 'IDK')
         self.assertEqual(response2['ISBN'], 'ISBN1310')
-        self.assertEqual(response2['pub_date'], '1979-10-12 00:00:00+00:00')
+        self.assertEqual(response2['pub_date'], '1979-10-12')
         self.assertEqual(response2['course']['pk'], "1")
 
 
@@ -549,8 +549,8 @@ class DeleteTextbookTestCase(TestCase):
         self.assertFalse(get('/api/v1/textbooks/1')['ok'])
 
     def test_user_not_found(self):
-        self.assertFalse(get('/api/v1/textbooks/4')['ok'])
-        self.assertFalse(post('/api/v1/textbooks/4/delete')['ok'])
+        self.assertFalse(get('/api/v1/textbooks/5')['ok'])
+        self.assertFalse(post('/api/v1/textbooks/5/delete')['ok'])
 
     def tearDown(self):
         pass
@@ -658,7 +658,7 @@ class CreatelistingTestCase(TestCase):
         post_data = {}
         post_data['textbook_key'] = 1
         post_data['price'] = 100.2
-        post_data['user_key'] = 4
+        post_data['user_key'] = 5
         post_data['condition'] = 'NEW'
         post_data['status'] = 'For Sale'
         self.assertTrue(
@@ -890,6 +890,83 @@ class ReverseLookup(TestCase):
         self.assertTrue(jsonObjectNoListings['ok'])
         self.assertNotIn('results', jsonObjectNoListings)
         self.assertFalse(jsonObjectTextbookDoesNotExist['ok'])
+
+    def tearDown(self):
+        pass
+
+
+class Authenticator(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_authenticator(self):
+        jsonObjectAuthenticator = send({'username': 'tmh6de', 'password': 'cool_password'}, '/api/v1/users/login')
+        self.assertTrue(jsonObjectAuthenticator['ok'])
+        self.assertEqual(jsonObjectAuthenticator['results']['authenticator']['user_id'], 4)
+        jsonObjectCheck = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']['authenticator']}, '/api/v1/authenticators/check')
+        self.assertTrue(jsonObjectCheck['ok'])
+        # Change authenticator to invalid value to check if an invalid authenticator fails
+        jsonObjectAuthenticator['results']['authenticator']['authenticator'] = '12345'
+        jsonObjectCheck2 = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']['authenticator']}, '/api/v1/authenticators/check')
+        self.assertFalse(jsonObjectCheck2['ok'])
+
+    def test_delete_authenticator(self):
+        jsonObjectAuthenticator = send({'username': 'tmh6de', 'password': 'cool_password'}, '/api/v1/users/login')
+        self.assertTrue(jsonObjectAuthenticator['ok'])  # Just make sure the authenticator is returned fine
+        jsonObjectDeleteResponse = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']
+                                        ['authenticator']}, '/api/v1/authenticators/delete')
+        self.assertTrue((jsonObjectDeleteResponse['ok']))
+        # If we send it again, we should get a "false" result, because the object is already gone
+        jsonObjectDeleteResponse2 = send({'authenticator': jsonObjectAuthenticator['results']['authenticator']
+                              ['authenticator']}, '/api/v1/authenticators/delete')
+        self.assertFalse(jsonObjectDeleteResponse2['ok'])
+        self.assertEqual(jsonObjectDeleteResponse2['error'], "Requested authenticator object does not exist")
+
+    def tearDown(self):
+        pass
+
+class get_all(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setYp(self):
+        pass
+
+    def test_get_all_textbooks(self):
+        gottan = get('/api/v1/textbooks/get_all')
+        self.assertTrue(gottan['ok'])
+        post_data = {}
+        post_data['item_title'] = 'Hitchhikerguide'
+        post_data['item_author'] = 'IDK'
+        post_data['course_key'] = 1
+        post_data['item_ISBN'] = 'ISBN1310'
+        post_data['pub_date'] = '1979-10-12'
+        send(post_data, '/api/v1/textbooks/create')
+        gotten = get(('/api/v1/textbooks/get_all'))
+        self.assertNotEqual(gottan, gotten)
+
+    def test_get_all_courses(self):
+        gottan = get('/api/v1/courses/get_all')
+        self.assertTrue(gottan['ok'])
+        post_data = {}
+        post_data['identifier'] = 'ISBN13'
+        post_data['department'] = 'math'
+        post_data['professor_key'] = 2
+        post_data['name'] = 'Math1310'
+        send(post_data, '/api/v1/courses/create')
+        gotten = get(('/api/v1/courses/get_all'))
+        self.assertNotEqual(gottan, gotten)
+
+    def test_get_all_professors(self):
+        gottan = get('/api/v1/professors/get_all')
+        self.assertTrue(gottan['ok'])
+        post_data = {}
+        post_data['name'] = 'Tom'
+        post_data['email'] = None
+        send(post_data, '/api/v1/professors/create')
+        gotten = get(('/api/v1/professors/get_all'))
+        self.assertNotEqual(gottan, gotten)
 
     def tearDown(self):
         pass

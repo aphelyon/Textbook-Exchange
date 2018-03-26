@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class User(models.Model):
@@ -45,7 +46,7 @@ class Textbook(models.Model):
     item_author = models.CharField(max_length=200)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     item_ISBN = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateField('date published')
 
     """Return a dictionary containing each component of the model with its respective label"""
     def as_json(self):
@@ -82,3 +83,12 @@ class Listing(models.Model):
         return dict(item=self.item.as_json(), price_text=self.price_text, actualprice=self.actualprice,
                     user=self.user.as_json(), condition=self.condition, status=self.status, pk=str(self.pk),
                     viewed_count=self.viewed_count, time_created=self.time_created)
+
+
+class Authenticator(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    authenticator = models.CharField(max_length=64, primary_key=True, unique=True)
+    date_created = models.DateTimeField(default=datetime.now)
+
+    def as_json(self):
+        return dict(user_id=self.user_id.pk, authenticator=self.authenticator, date_created=self.date_created)

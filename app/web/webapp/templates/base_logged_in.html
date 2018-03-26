@@ -25,11 +25,20 @@
         <a href="{% url 'webapp:index' %}">Home</a>
         <a href="">Listings</a>
         <a href="">My Listings</a>
-        <a href="">Professors</a>
-        <a href="">Courses</a>
-          <a href="">Create a Listing</a>
-        <a href="">Users</a>
-        <a id="logOut" href="">Log In</a>
+        <a href="{% url 'webapp:create_professor' %}">Professors</a>
+        <a href="{% url 'webapp:create_course' %}">Courses</a>
+        <a href="{% url 'webapp:create_listing' %}">Create Listing</a>
+         <a href="{% url 'webapp:create_textbook' %}">Create Textbook</a>
+          {% load auth_cookie %}
+            {% cookies as cookie_exists %}
+          {% if not cookie_exists %}
+        <a id="logOut" href="{% url 'webapp:login' %}">Log In</a>
+              {% else %}
+              <!--This is the only way I could think to make a post request for our logout method while keeping style-->
+              <!--consistent. Basically, you use a fake form that links to our logout view that our Logout link submits-->
+              <form id="logout_form" action="{% url 'webapp:logout' %}" method="post">{% csrf_token %}</form>
+          <a id="logOut" href="javascript:{}" onclick="document.getElementById('logout_form').submit()">Log Out</a>
+      {% endif %}
       </div>
       {% endblock %}
       <div class = "panel panel-default container" >

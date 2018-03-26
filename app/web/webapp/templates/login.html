@@ -1,0 +1,17 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+    {% load auth_cookie %}
+            {% cookies as cookie_exists %}
+          {% if cookie_exists %}
+<meta http-equiv="refresh" content="0; url={% url 'webapp:index' %}" />
+              {% else %}
+    <h1>Login to the Textbook Exchange</h1>
+<p><form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit" class="login btn btn-default">Login</button>
+</form></p>
+    <p>Don't have an account yet? <a href="{% url 'webapp:signup' %}">Sign up here.</a></p>
+{% endif %}
+{% endblock %}

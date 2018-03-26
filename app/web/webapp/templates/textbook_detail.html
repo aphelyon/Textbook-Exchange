@@ -8,7 +8,7 @@
         {% load humanize %}
         <h1>Textbook: {{ textbook.results.title }}</h1>
         {% if textbook.results.course %}
-            <p><strong>Course: </strong>: </strong><a href="{% url 'webapp:course' pk=textbook.results.course.pk %}">{{ textbook.results.course.identifier }}</a></p>
+            <p><strong>Course: </strong><a href="{% url 'webapp:course' pk=textbook.results.course.pk %}">{{ textbook.results.course.identifier }}</a></p>
             {% endif %}
         <p><strong>Author:</strong> {{ textbook.results.author }}</p>
         <p><strong>Date Published:</strong> {{ textbook.results.pub_date|date:"M d, Y" }}</p>
