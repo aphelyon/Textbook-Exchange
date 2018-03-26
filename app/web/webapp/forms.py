@@ -6,16 +6,21 @@ import urllib.request
 import urllib.parse
 import json
 from datetime import datetime
+from django.core.validators import RegexValidator
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
     password = forms.CharField(max_length=256, widget=forms.PasswordInput())
 
+
 class textbookForm(forms.Form):
+    # Regex pulled from http://regexlib.com/Search.aspx?k=isbn&AspxAutoDetectCookieSupport=1 4th choice
+    isbn_validator = RegexValidator(r'^(97(8|9))?\d{9}(\d|X)$', "Please enter a valid 10 or 13 digit ISBN with no dashes. Make sure your ISBN-13 starts with 978 or 979.")
     title = forms.CharField(max_length=200)
     author = forms.CharField(max_length=200)
-    isbn = forms.CharField(max_length=200, label='ISBN Number')
-    pub_date = forms.DateField(label='Publication Date')
+    isbn = forms.CharField(max_length=13, label='ISBN Number', validators=[isbn_validator])
+    pub_date = forms.DateField(label='Publication Date', help_text="Please use the format: YYYY-MM-DD")
     def __init__(self, *args, **kwargs):
         super(textbookForm, self, ).__init__(*args, **kwargs)
         course_items = []
@@ -28,7 +33,6 @@ class textbookForm(forms.Form):
             tuple = (pk, identifier)
             course_items.append(tuple)
         self.fields['course'] = forms.CharField(widget=forms.Select(choices=course_items))
-    #pub_date = forms.DateField('Publication Date', widget=forms.SelectDateWidget(years=range(2019,1970, -1)))
 
     
 class listingForm(forms.Form):
@@ -63,7 +67,6 @@ class listingForm(forms.Form):
         self.fields['item'] = forms.CharField(widget=forms.Select(choices=textbook_items))
 
 
-
 class SignUpForm(forms.Form):
     email = forms.EmailField(max_length=100)
     username = forms.CharField(max_length=32)
@@ -71,6 +74,7 @@ class SignUpForm(forms.Form):
     confirm_password = forms.CharField(max_length=256, widget=forms.PasswordInput())
     first_name = forms.CharField(max_length=100)
     last_name = forms.CharField(max_length=100)
+
 
 class courseForm(forms.Form):
     name = forms.CharField(max_length=100)
@@ -88,6 +92,7 @@ class courseForm(forms.Form):
             tuple = (pk, prof_name)
             professor_items.append(tuple)
         self.fields['professor'] = forms.CharField(widget=forms.Select(choices=professor_items))
+
 
 class professorForm(forms.Form):
     name = forms.CharField(max_length=100)

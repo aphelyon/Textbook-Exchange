@@ -1,4 +1,5 @@
 {% extends "base_logged_in.html" %}
 	{% block content %}
     <h1>Professor Successfully Created</h1>
+        <a href="{% url 'webapp:create_course' %}">Create a Course with your new professor.</a>
 	{% endblock %}
