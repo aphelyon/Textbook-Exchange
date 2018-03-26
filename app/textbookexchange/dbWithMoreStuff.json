@@ -6,7 +6,7 @@
     "first_name": "Michael",
     "last_name": "Chang",
     "username": "mhc6kp",
-    "password": "safepassword",
+    "password": "pbkdf2_sha256$30000$a6otRTnwDlFC$j+BNxXGGRZ/OJMD7KaKggcRITUfk965TNxS835D3hhs=",
     "email": "mhc6kp@virginia.edu",
     "userJoined": "2018-02-19T00:00:00Z"
   }
@@ -18,7 +18,7 @@
     "first_name": "Hunter",
     "last_name": "Murphy",
     "username": "bhm5zr",
-    "password": "saferpassword",
+    "password": "pbkdf2_sha256$30000$a6otRTnwDlFC$j+BNxXGGRZ/OJMD7KaKggcRITUfk965TNxS835D3hhs=",
     "email": "bhm5zr@virginia.edu",
     "userJoined": "2018-02-19T00:00:00Z"
   }
@@ -30,7 +30,7 @@
     "first_name": "Siteng",
     "last_name": "Zhang",
     "username": "sz4dd",
-    "password": "safestpassword",
+    "password": "pbkdf2_sha256$30000$a6otRTnwDlFC$j+BNxXGGRZ/OJMD7KaKggcRITUfk965TNxS835D3hhs=",
     "email": "sz4dd@virginia.edu",
     "userJoined": "2018-02-19T00:00:00Z"
   }
