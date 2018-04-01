@@ -3,6 +3,7 @@ from django.http import JsonResponse
 import urllib.request
 import urllib.parse
 import json
+from kafka import KafkaProducer
 
 
 # Create your views here.
@@ -49,9 +50,14 @@ def Create_listing_view(request):
         # The current user is not authenticated to create a new listing, don't let the request go through
         return JsonResponse({'create_listing': authenticate_response})
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
-    data = urllib.parse.urlencode(
-        {'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key': request.POST.get('user'),
-         'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
+
+    # Add kafka stuff
+    producer = KafkaProducer(bootstrap_servers='kafka:9092')
+    data_dict = {'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key':
+        request.POST.get('user'), 'condition': request.POST.get('condition'), 'status': request.POST.get('status')}
+    producer.send('new-listings-topic', json.dumps(data_dict).encode('utf-8'))
+
+    data = urllib.parse.urlencode(data_dict).encode('utf-8')
     create_request = urllib.request.Request(create_listing_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
     return JsonResponse({'create_listing': response})
