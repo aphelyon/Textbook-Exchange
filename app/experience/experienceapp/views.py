@@ -4,6 +4,7 @@ import urllib.request
 import urllib.parse
 import json
 from kafka import KafkaProducer
+from kafka import KafkaConsumer
 
 
 # Create your views here.
@@ -51,15 +52,22 @@ def Create_listing_view(request):
         return JsonResponse({'create_listing': authenticate_response})
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
 
-    # Add kafka stuff
-    producer = KafkaProducer(bootstrap_servers='kafka:9092')
-    data_dict = {'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key':
-        request.POST.get('user'), 'condition': request.POST.get('condition'), 'status': request.POST.get('status')}
-    producer.send('new-listings-topic', json.dumps(data_dict).encode('utf-8'))
-
-    data = urllib.parse.urlencode(data_dict).encode('utf-8')
+    data = urllib.parse.urlencode({'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key':
+        request.POST.get('user'), 'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
     create_request = urllib.request.Request(create_listing_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
+
+    # Add kafka queue stuff
+    if response['ok']:
+        producer = KafkaProducer(bootstrap_servers='kafka:9092')
+        data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
+                     'user': response['results']['user']['username'], 'condition': response['results']['condition'],
+                     'status': response['results']['status'],
+                     'course': response['results']['item']['course']['identifier'],
+                     'course_department': response['results']['item']['course']['department'],
+                     'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
+        producer.send('new-listings-topic', json.dumps(data_dict).encode('utf-8'))
+
     return JsonResponse({'create_listing': response})
 
 
