@@ -1,9 +1,4 @@
-/*.nav {
-    margin-top: 20px;
-    padding: 0;
-    list-style: none;
-    position: inline;
-}*/
+/* Nav bar */
 .mynav {
     /*background-color: #000099;*/
     background-color: #3196ae;
@@ -49,11 +44,13 @@ ul li ul li{
     list-style-type: none;
 }
 
+/* Django form errors */
 .errorlist
     {
         color: red;
     }
 
+/* Search bar stuff */
 .mynav .search-container button {
   float: right;
   padding: 6px 10px;
