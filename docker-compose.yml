@@ -51,4 +51,6 @@ batch:
       - es:es
    volumes:
       - ./app/search:/app
+   environment:
+      - PYTHONUNBUFFERED=0
    command: bash -c "python search_index.py"

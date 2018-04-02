@@ -4,8 +4,6 @@ import urllib.request
 import urllib.parse
 import json
 from kafka import KafkaProducer
-from kafka import KafkaConsumer
-
 
 # Create your views here.
 
@@ -62,7 +60,7 @@ def Create_listing_view(request):
         producer = KafkaProducer(bootstrap_servers='kafka:9092')
         data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
                      'user': response['results']['user']['username'], 'condition': response['results']['condition'],
-                     'status': response['results']['status'],
+                     'status': response['results']['status'], 'id': response['results']['pk'],
                      'course': response['results']['item']['course']['identifier'],
                      'course_department': response['results']['item']['course']['department'],
                      'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
