@@ -74,14 +74,14 @@ def Create_listing_view(request):
         # Because course is optional for a textbook
         if 'course' in response['results']:
             data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
-                         'user': response['results']['user']['username'], 'condition': response['results']['condition'],
+                         'user': response['results']['user']['username'], 'user_pk': response['results']['user']['pk'], 'condition': response['results']['condition'],
                          'status': response['results']['status'], 'id': response['results']['pk'],
                          'course': response['results']['item']['course']['identifier'],
                          'course_department': response['results']['item']['course']['department'],
                          'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
         else:
             data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
-                         'user': response['results']['user']['username'], 'condition': response['results']['condition'],
+                         'user': response['results']['user']['username'], 'user_pk': response['results']['user']['pk'], 'condition': response['results']['condition'],
                          'status': response['results']['status'], 'id': response['results']['pk'],
                          'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
         producer.send('new-listings-topic', json.dumps(data_dict).encode('utf-8'))
