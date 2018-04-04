@@ -71,12 +71,19 @@ def Create_listing_view(request):
     # Add kafka queue stuff
     if response['ok']:
         producer = KafkaProducer(bootstrap_servers='kafka:9092')
-        data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
-                     'user': response['results']['user']['username'], 'condition': response['results']['condition'],
-                     'status': response['results']['status'], 'id': response['results']['pk'],
-                     'course': response['results']['item']['course']['identifier'],
-                     'course_department': response['results']['item']['course']['department'],
-                     'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
+        # Because course is optional for a textbook
+        if 'course' in response['results']:
+            data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
+                         'user': response['results']['user']['username'], 'condition': response['results']['condition'],
+                         'status': response['results']['status'], 'id': response['results']['pk'],
+                         'course': response['results']['item']['course']['identifier'],
+                         'course_department': response['results']['item']['course']['department'],
+                         'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
+        else:
+            data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
+                         'user': response['results']['user']['username'], 'condition': response['results']['condition'],
+                         'status': response['results']['status'], 'id': response['results']['pk'],
+                         'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
         producer.send('new-listings-topic', json.dumps(data_dict).encode('utf-8'))
 
     return JsonResponse({'create_listing': response})
