@@ -39,6 +39,7 @@ def search_view(request):
     experience_request = urllib.request.Request(request_url, data)
     listing_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     return render(request, 'search.html', listing_details)
+    #return JsonResponse(listing_details)
 
 
 def create_course_view(request):

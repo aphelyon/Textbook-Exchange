@@ -44,7 +44,7 @@ def get_professors_view(request):
 
 
 def search_view(request):
-    data = urllib.parse.urlencode({'title': request.GET.get('search')})
+    data = request.POST.get('search')
     #get_textbooks_url = 'http://models-api:8000/api/v1/textbooks/get_all'
     #get_textbooks_request = urllib.request.Request(get_textbooks_url)
     #response1 = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
