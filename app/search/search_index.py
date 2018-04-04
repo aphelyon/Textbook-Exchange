@@ -7,6 +7,8 @@ if __name__ == "__main__":
     sleep(20)
     print("Batch container starting")
     es = Elasticsearch(['es'])
+    # If user searches before any listings are created, add the index just in case
+    es.indices.create(index='listing_index')
     consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
     while True:
         for message in consumer:
