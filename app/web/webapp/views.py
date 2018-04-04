@@ -31,6 +31,15 @@ def listing_view(request, pk):
     return render(request, 'listing_detail.html', listing_details)
 
 
+def search_view(request):
+    search = request.GET.get('search')
+    #details = json.loads(urllib.request.urlopen(search).read().decode('utf-8'))
+    #request_url = 'http://exp-api:8000/experience/search/'
+    #experience_request = urllib.request.Request(request_url)
+    #listing_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    return render(request, 'search.html', search)
+
+
 def create_course_view(request):
     auth = request.COOKIES.get('auth')
     course_form = webapp.forms.courseForm()

@@ -4,6 +4,9 @@ import urllib.request
 import urllib.parse
 import json
 from kafka import KafkaProducer
+from kafka import KafkaConsumer
+from elasticsearch import Elasticsearch
+
 
 # Create your views here.
 
@@ -38,6 +41,16 @@ def get_professors_view(request):
     get_professors_request = urllib.request.Request(get_professors_url)
     get_professors_response = json.loads(urllib.request.urlopen(get_professors_request).read().decode('utf-8'))
     return JsonResponse({'get_professors': get_professors_response})
+
+
+def search_view(request):
+    data = urllib.parse.urlencode({'title': request.GET.get('search')})
+    #get_textbooks_url = 'http://models-api:8000/api/v1/textbooks/get_all'
+    #get_textbooks_request = urllib.request.Request(get_textbooks_url)
+    #response1 = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
+    es = Elasticsearch(['es'])
+    response = es.search(index='listing_index', body={'query': {'query_string': {'query': data}}, 'size': 10})
+    return JsonResponse({'search': response})
 
 
 def Create_listing_view(request):

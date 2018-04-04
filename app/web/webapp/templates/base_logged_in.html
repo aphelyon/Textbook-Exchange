@@ -42,7 +42,7 @@
           <a id="logOut" href="javascript:{}" onclick="document.getElementById('logout_form').submit()">Log Out</a>
       {% endif %}
       <div class="search-container">
-        <form action="">
+        <form action="{% url 'webapp:search' %}">
         <input type="text" placeholder="Search for a listing.." name="search">
         <button type="submit"><i class="glyphicon glyphicon-search"></i></button>
         </form>
