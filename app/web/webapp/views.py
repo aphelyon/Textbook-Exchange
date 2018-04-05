@@ -127,6 +127,20 @@ def create_professor_view(request):
         return render(request, "professor.html", {'form': f})
     return render(request, "create_professor_success.html")
 
+def my_listings_view(request):
+    auth = request.COOKIES.get('auth')
+    if not auth:
+        # Handle user not logged in while trying to create a listing
+        return HttpResponseRedirect(reverse("webapp:login") + "?next=" + reverse("webapp:my_listings"))
+    else:
+        auth = literal_eval(auth.replace('&', ','))
+
+    if request.method == 'GET':
+        user_id = auth['user_id']
+        experience_url = 'http://exp-api:8000/experience/mylistings/' + str(user_id)
+        experience_request = urllib.request.Request(experience_url)
+        my_listings_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        return render(request, 'my_listings.html', my_listings_details)
 
 def Create_listing_view(request):
     auth = request.COOKIES.get('auth')

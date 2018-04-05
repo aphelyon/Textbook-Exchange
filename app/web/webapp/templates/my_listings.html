@@ -1,0 +1,11 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+<h1>My Listings</h1>
+<ul>
+    {% for listing in my_listings.results %}
+            <h3><a href="{% url 'webapp:listing' pk=listing.pk %}">{{ listing.item.title }} (${{ listing.price_text }})</a>
+            </h3>
+        {% endfor %}
+    </ul>
+{% endblock %}

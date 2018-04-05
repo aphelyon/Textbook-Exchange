@@ -172,6 +172,12 @@ def course_view(request, pk):
     textbook_response = json.loads(urllib.request.urlopen(textbook_request).read().decode('utf-8'))
     return JsonResponse({'course':response, 'textbooks': textbook_response})
 
+def my_listing_view(request, pk):
+    my_listing_request_url = 'http://models-api:8000/api/v1//listings/from_user/' + str(pk)
+    my_listing_request = urllib.request.Request(my_listing_request_url)
+    response = json.loads(urllib.request.urlopen(my_listing_request).read().decode('utf-8'))
+    return JsonResponse({'my_listings': response})
+
 
 def textbook_view(request, pk):
     database_request_url = 'http://models-api:8000/api/v1/textbooks/' + str(pk)
