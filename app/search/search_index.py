@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+from elasticsearch import exceptions
 from kafka import KafkaConsumer
 from time import sleep
 from json import loads
@@ -8,7 +9,10 @@ if __name__ == "__main__":
     print("Batch container starting")
     es = Elasticsearch(['es'])
     # If user searches before any listings are created, add the index just in case
-    es.indices.create(index='listing_index')
+    try:
+        es.indices.create(index='listing_index')
+    except exceptions.RequestError:
+        pass
     consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
     while True:
         for message in consumer:
