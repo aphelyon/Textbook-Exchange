@@ -45,9 +45,6 @@ def get_professors_view(request):
 
 def search_view(request):
     data = request.POST.get('search')
-    #get_textbooks_url = 'http://models-api:8000/api/v1/textbooks/get_all'
-    #get_textbooks_request = urllib.request.Request(get_textbooks_url)
-    #response1 = json.loads(urllib.request.urlopen(get_textbooks_request).read().decode('utf-8'))
     es = Elasticsearch(['es'])
     response = es.search(index='listing_index', body={'query': {'query_string': {'query': data}}, 'size': 10})
     return JsonResponse({'search': response})
@@ -171,6 +168,7 @@ def course_view(request, pk):
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
     textbook_response = json.loads(urllib.request.urlopen(textbook_request).read().decode('utf-8'))
     return JsonResponse({'course':response, 'textbooks': textbook_response})
+
 
 def my_listing_view(request, pk):
     my_listing_request_url = 'http://models-api:8000/api/v1//listings/from_user/' + str(pk)
