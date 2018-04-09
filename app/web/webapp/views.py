@@ -33,9 +33,9 @@ def listing_view(request, pk):
 
 def search_view(request):
     search = request.GET.get('search')
-    data = urllib.parse.urlencode({'search': search}).encode('utf-8')
-    request_url = 'http://exp-api:8000/experience/search'
-    experience_request = urllib.request.Request(request_url, data)
+    data = urllib.parse.urlencode({'search': search})
+    request_url = 'http://exp-api:8000/experience/search?' + data
+    experience_request = urllib.request.Request(request_url)
     listing_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     return render(request, 'search.html', listing_details)
 

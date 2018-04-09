@@ -44,7 +44,7 @@ def get_professors_view(request):
 
 
 def search_view(request):
-    data = request.POST.get('search')
+    data = request.GET.get('search')
     es = Elasticsearch(['es'])
     response = es.search(index='listing_index', body={'query': {'query_string': {'query': data}}, 'size': 10})
     return JsonResponse({'search': response})
