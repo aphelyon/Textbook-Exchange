@@ -31,6 +31,15 @@ def listing_view(request, pk):
     return render(request, 'listing_detail.html', listing_details)
 
 
+def search_view(request):
+    search = request.GET.get('search')
+    data = urllib.parse.urlencode({'search': search})
+    request_url = 'http://exp-api:8000/experience/search?' + data
+    experience_request = urllib.request.Request(request_url)
+    listing_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+    return render(request, 'search.html', listing_details)
+
+
 def create_course_view(request):
     auth = request.COOKIES.get('auth')
     course_form = webapp.forms.courseForm()
@@ -58,6 +67,7 @@ def create_course_view(request):
             return HttpResponseRedirect(reverse("webapp:login") + "?next=" + reverse("webapp:create_course"))
         return render(request, "course.html", {'form': f})
     return course_view(request, experience_response['create_course']['results']['pk'])
+
 
 def create_textbook_view(request):
     auth = request.COOKIES.get('auth')
@@ -89,6 +99,7 @@ def create_textbook_view(request):
         return render(request, "textbook.html", {'form': textbook_form})
     return textbook_view(request, experience_response['create_textbook']['results']['pk'])
 
+
 def create_professor_view(request):
     auth = request.COOKIES.get('auth')
     professor_form = webapp.forms.professorForm()
@@ -115,6 +126,22 @@ def create_professor_view(request):
             return HttpResponseRedirect(reverse("webapp:login") + "?next=" + reverse("webapp:create_professor"))
         return render(request, "professor.html", {'form': f})
     return render(request, "create_professor_success.html")
+
+
+def my_listings_view(request):
+    auth = request.COOKIES.get('auth')
+    if not auth:
+        # Handle user not logged in while trying to create a listing
+        return HttpResponseRedirect(reverse("webapp:login") + "?next=" + reverse("webapp:my_listings"))
+    else:
+        auth = literal_eval(auth.replace('&', ','))
+
+    if request.method == 'GET':
+        user_id = auth['user_id']
+        experience_url = 'http://exp-api:8000/experience/mylistings/' + str(user_id)
+        experience_request = urllib.request.Request(experience_url)
+        my_listings_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
+        return render(request, 'my_listings.html', my_listings_details)
 
 
 def Create_listing_view(request):
@@ -249,6 +276,7 @@ def signup(request):
             response = HttpResponseRedirect(reverse('webapp:index'))
             response.set_cookie('auth', str(experience_login_response['results']['authenticator']).replace(',', '&'))
             return response
+
 
 def logout(request):
     response = HttpResponseRedirect(reverse('webapp:index'))

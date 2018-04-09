@@ -1,9 +1,4 @@
-/*.nav {
-    margin-top: 20px;
-    padding: 0;
-    list-style: none;
-    position: inline;
-}*/
+/* Nav bar */
 .mynav {
     /*background-color: #000099;*/
     background-color: #3196ae;
@@ -49,7 +44,56 @@ ul li ul li{
     list-style-type: none;
 }
 
+/* Django form errors */
 .errorlist
     {
         color: red;
     }
+
+/* Search bar stuff */
+.mynav .search-container button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.mynav .search-container {
+  float: right;
+}
+
+.mynav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+    /* Change this to change the size of the search bar */
+    min-width: 275px;
+}
+
+.mynav .search-container button:hover {
+  background: #ccc;
+}
+
+@media screen and (max-width: 600px) {
+  .mynav .search-container {
+    float: none;
+  }
+  .mynav a, .mynav input[type=text], .mynav .search-container button {
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+  .mynav input[type=text] {
+    border: 1px solid #ccc;
+  }
+}
+
+* {box-sizing: border-box;}

@@ -3,6 +3,9 @@ from django.http import JsonResponse
 import urllib.request
 import urllib.parse
 import json
+from kafka import KafkaProducer
+from kafka import KafkaConsumer
+from elasticsearch import Elasticsearch
 
 
 # Create your views here.
@@ -40,6 +43,13 @@ def get_professors_view(request):
     return JsonResponse({'get_professors': get_professors_response})
 
 
+def search_view(request):
+    data = request.GET.get('search')
+    es = Elasticsearch(['es'])
+    response = es.search(index='listing_index', body={'query': {'query_string': {'query': data}}, 'size': 10})
+    return JsonResponse({'search': response})
+
+
 def Create_listing_view(request):
     authenticate_url = 'http://models-api:8000/api/v1/authenticators/check'
     authenticate_data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
@@ -49,11 +59,30 @@ def Create_listing_view(request):
         # The current user is not authenticated to create a new listing, don't let the request go through
         return JsonResponse({'create_listing': authenticate_response})
     create_listing_url = 'http://models-api:8000/api/v1/listings/create'
-    data = urllib.parse.urlencode(
-        {'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key': request.POST.get('user'),
-         'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
+
+    data = urllib.parse.urlencode({'textbook_key': request.POST.get('item'), 'price': request.POST.get('price'), 'user_key':
+        request.POST.get('user'), 'condition': request.POST.get('condition'), 'status': request.POST.get('status')}).encode('utf-8')
     create_request = urllib.request.Request(create_listing_url, data)
     response = json.loads(urllib.request.urlopen(create_request).read().decode('utf-8'))
+
+    # Add kafka queue stuff
+    if response['ok']:
+        producer = KafkaProducer(bootstrap_servers='kafka:9092')
+        # Because course is optional for a textbook
+        if 'course' in response['results']:
+            data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
+                         'user': response['results']['user']['username'], 'user_pk': response['results']['user']['pk'], 'condition': response['results']['condition'],
+                         'status': response['results']['status'], 'id': response['results']['pk'],
+                         'course': response['results']['item']['course']['identifier'],
+                         'course_department': response['results']['item']['course']['department'],
+                         'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
+        else:
+            data_dict = {'title': response['results']['item']['title'], 'price': response['results']['price_text'],
+                         'user': response['results']['user']['username'], 'user_pk': response['results']['user']['pk'], 'condition': response['results']['condition'],
+                         'status': response['results']['status'], 'id': response['results']['pk'],
+                         'isbn': response['results']['item']['ISBN'], 'pub_date': response['results']['item']['pub_date']}
+        producer.send('new-listings-topic', json.dumps(data_dict).encode('utf-8'))
+
     return JsonResponse({'create_listing': response})
 
 
@@ -139,6 +168,13 @@ def course_view(request, pk):
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
     textbook_response = json.loads(urllib.request.urlopen(textbook_request).read().decode('utf-8'))
     return JsonResponse({'course':response, 'textbooks': textbook_response})
+
+
+def my_listing_view(request, pk):
+    my_listing_request_url = 'http://models-api:8000/api/v1//listings/from_user/' + str(pk)
+    my_listing_request = urllib.request.Request(my_listing_request_url)
+    response = json.loads(urllib.request.urlopen(my_listing_request).read().decode('utf-8'))
+    return JsonResponse({'my_listings': response})
 
 
 def textbook_view(request, pk):

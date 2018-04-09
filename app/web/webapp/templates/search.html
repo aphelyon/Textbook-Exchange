@@ -1,0 +1,19 @@
+{% extends "base_logged_in.html" %}
+
+{% block content %}
+{% load get %}
+<h1>Search Results</h1>
+{% if search.hits.total > 0 %}
+    <ul>
+    {% for hit in search.hits.hits %}
+        {% with hit|get_under:"_source" as hit_result %}
+            <li><a href="{% url 'webapp:listing' pk=hit_result.id %}">{{ hit_result.title }} (${{ hit_result.price }})</a>
+            <ul><li>Seller: <a href="{% url 'webapp:listing' pk=hit_result.user_pk %}">{{ hit_result.user }}</a></li></ul>
+            </li>
+        {% endwith %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Your search did not result in any hits. Please try a different keyword.</p>
+{% endif %}
+{% endblock %}

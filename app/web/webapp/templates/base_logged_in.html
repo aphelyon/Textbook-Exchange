@@ -24,7 +24,7 @@
       <div class="mynav">
         <a href="{% url 'webapp:index' %}">Home</a>
         <a href="">Listings</a>
-        <a href="">My Listings</a>
+        <a href="{% url 'webapp:my_listings' %}">My Listings</a>
         <a href="{% url 'webapp:create_professor' %}">Professors</a>
         <a href="{% url 'webapp:create_course' %}">Courses</a>
         <a href="{% url 'webapp:create_listing' %}">Create Listing</a>
@@ -32,6 +32,8 @@
           {% load auth_cookie %}
             {% cookies as cookie_exists %}
           {% if not cookie_exists %}
+
+
         <a id="logOut" href="{% url 'webapp:login' %}">Log In</a>
               {% else %}
               <!--This is the only way I could think to make a post request for our logout method while keeping style-->
@@ -39,6 +41,12 @@
               <form id="logout_form" action="{% url 'webapp:logout' %}" method="post">{% csrf_token %}</form>
           <a id="logOut" href="javascript:{}" onclick="document.getElementById('logout_form').submit()">Log Out</a>
       {% endif %}
+      <div class="search-container">
+        <form action="{% url 'webapp:search' %}">
+        <input type="text" placeholder="Search for a listing.." name="search">
+        <button type="submit"><i class="glyphicon glyphicon-search"></i></button>
+        </form>
+      </div>
       </div>
       {% endblock %}
       <div class = "panel panel-default container" >

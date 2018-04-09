@@ -5,9 +5,11 @@ urlpatterns = []
 
 urlpatterns += [url(r'^listings/(?P<pk>[-\w]+)$', views.listing_view, name='get-listing'),
                 url(r'^listings$', views.Create_listing_view, name ='create_listing'),
+                url(r'^mylistings/(?P<pk>[-\w]+)$', views.my_listing_view, name='my-listing'),
                 url(r'^textbooks$', views.create_textbook_view, name ='create_textbook'),
                 url(r'^professors$', views.create_professor_view, name='create_professor'),
                 url(r'^courses$', views.create_course_view, name='create_course'),
+                url(r'^search$', views.search_view, name ='search'),
                 url(r'^get_all$', views.get_textbook_view, name='get_textbook'),
                 url(r'^get_all_courses$', views.get_courses_view, name='get_courses'),
                 url(r'^get_all_professors$', views.get_professors_view, name='get_professors'),
