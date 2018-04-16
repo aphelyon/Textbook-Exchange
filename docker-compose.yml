@@ -50,6 +50,7 @@ batch:
    links:
       - kafka:kafka
       - es:es
+   privileged: true
    volumes:
       - ./app/search:/app
    environment:
