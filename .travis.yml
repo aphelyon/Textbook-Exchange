@@ -1,0 +1,17 @@
+sudo: required
+
+dist: trusty
+
+services:
+  - docker
+
+before_install:
+ - docker pull tp33/django
+ 
+before_script:
+ - docker-compose -f ./app/docker-compose_TRAVIS.yml up -d
+script:
+  -  docker exec -it cs4501textbookexchange_models_1 bash -c "cd app/textbookexchange && bash ./tests.sh"
+after_script:
+ - docker-compose -f ./app/docker-compose_TRAVIS.yml stop
+ - docker-compose -f ./app/docker-compose_TRAVIS.yml -f
