@@ -1,0 +1,9 @@
+models:
+    image: tp33/django
+    external_links:
+      -  mysql:db
+    volumes:
+      - ./app/textbookexchange:/app
+    ports:
+      - "8001:8000"
+    command: bash -c "python manage.py makemigrations myapp && python manage.py makemigrations && python manage.py migrate && python manage.py loaddata dbWithMoreStuff.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./textbookexchange/wsgi.py"
