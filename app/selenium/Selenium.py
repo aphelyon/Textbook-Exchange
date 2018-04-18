@@ -13,7 +13,7 @@ class SeleniumTest(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Remote(
-        command_executor='http://192.168.99.100:4444/wd/hub',
+        command_executor='http://selenium-chrome:4444/wd/hub',
         desired_capabilities=DesiredCapabilities.CHROME)
 
     def test_search_in_python_org(self):
