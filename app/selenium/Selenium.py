@@ -95,9 +95,11 @@ class SeleniumTest(unittest.TestCase):
         department.send_keys("math")
         department.send_keys(Keys.ENTER)
         driver.implicitly_wait(5)
-        create_course = False
-        if driver.find_element_by_link_text("tp3ks@virginia.edu") is not None:
-            create_course = True
+        create_course = True
+        try:
+            driver.find_element_by_link_text("tp3k12s@virginia.edu")
+        except selenium.common.exceptions.NoSuchElementException:
+            create_course = False
         self.assertTrue(create_course)
         # Below check if you can create a textbook
         driver.get('http://165.227.202.249:8000/textbook')
@@ -115,7 +117,7 @@ class SeleniumTest(unittest.TestCase):
         if driver.find_element_by_link_text("CS 2150") is not None:
             create_textbook = True
         self.assertTrue(create_textbook)
-        
+
     def tearDown(self):
         self.driver.close()
 
