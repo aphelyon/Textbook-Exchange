@@ -18,8 +18,9 @@ before_script:
  - docker-compose -f ./docker-compose_TRAVIS.yml up -d
  
 script:
-  -  docker exec -it cs4501textbookexchange_models_1 bash -c "bash ./tests.sh"
   -  docker exec -it selenium-test bash -c "bash ./tests.sh"
+  -  docker exec -it cs4501textbookexchange_models_1 bash -c "bash ./tests.sh"
+  
 after_script:
  - docker-compose -f ./docker-compose_TRAVIS.yml stop
  - docker-compose -f ./docker-compose_TRAVIS.yml -f
