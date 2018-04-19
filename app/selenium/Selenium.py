@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,7 +21,6 @@ class SeleniumTest(unittest.TestCase):
         driver = self.driver
         #gets the digital ocean homepage for our project
         driver.get("http://165.227.202.249:8000")
-        print(driver.title)
         #check if the get is successful
         self.assertIn("Textbook Exchange", driver.title)
         #get the login page
@@ -55,23 +55,23 @@ class SeleniumTest(unittest.TestCase):
         priceElement.send_keys("239")
         priceElement.send_keys(Keys.ENTER)
         driver.implicitly_wait(5)
-        create_test = False
+        create_test = True
         #This checks whether the create listing operation is successful
-        #Also, the if statement actually doesn't serve much purpose because
-        #an error would occur if the driver.find... finds nothing. So if error doesn't then it is good.
-        if driver.find_element_by_link_text("tmh6de") is not None:
-            create_test = True
+        try:
+            driver.find_element_by_link_text("tmh6de")
+        except NoSuchElementException:
+            create_test = False
         self.assertTrue(create_test)
         #Below checks whether search function works
         search = driver.find_element_by_name('search')
         search.send_keys("Hitchikers Guide to the Galaxy")
         search.send_keys(Keys.ENTER)
         search_test = True
-        wait = WebDriverWait(driver, 5)
-        element = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'Hitchikers Guide to the Galaxy ($239)')))
-        print(element)
-        if driver.find_element_by_link_text("Hitchikers Guide to the Galaxy ($239)") == element:
-            search_test = True
+        driver.implicitly_wait(5)
+        try:
+            driver.find_element_by_link_text("Hitchikers Guide to the Galaxy ($239)")
+        except NoSuchElementException:
+            search_test = False
         self.assertTrue(search_test)
         #Below checks if create professor works
         driver.get('http://165.227.202.249:8000/professor')
@@ -81,9 +81,11 @@ class SeleniumTest(unittest.TestCase):
         email.send_keys('myemail@email.com')
         email.send_keys(Keys.ENTER)
         driver.implicitly_wait(3)
-        create_prof = False
-        if driver.find_element_by_link_text("Create a Course with your new professor.") is not None:
-            create_prof = True
+        create_prof = True
+        try:
+            driver.find_element_by_link_text("Create a Course with your new professor.")
+        except NoSuchElementException:
+            create_prof = False
         self.assertTrue(create_prof)
         #Below checks if you can create a course
         driver.get('http://165.227.202.249:8000/course')
@@ -97,8 +99,8 @@ class SeleniumTest(unittest.TestCase):
         driver.implicitly_wait(5)
         create_course = True
         try:
-            driver.find_element_by_link_text("tp3k12s@virginia.edu")
-        except selenium.common.exceptions.NoSuchElementException:
+            driver.find_element_by_link_text("tp3ks@virginia.edu")
+        except NoSuchElementException:
             create_course = False
         self.assertTrue(create_course)
         # Below check if you can create a textbook
@@ -117,6 +119,40 @@ class SeleniumTest(unittest.TestCase):
         if driver.find_element_by_link_text("CS 2150") is not None:
             create_textbook = True
         self.assertTrue(create_textbook)
+        #Below tests the flow of the program.
+        driver.get('http://165.227.202.249:8000')
+        driver.find_element_by_link_text('My Listings').click()
+        driver.implicitly_wait(3)
+        flow_test = True
+        try:
+            driver.find_element_by_link_text("What If? ($9)")
+        except NoSuchElementException:
+            flow_test = False
+        driver.find_element_by_link_text('Professors').click()
+        driver.implicitly_wait(3)
+        try:
+            driver.find_element_by_name('name')
+        except NoSuchElementException:
+            flow_test = False
+        driver.find_element_by_link_text('Courses').click()
+        driver.implicitly_wait(3)
+        try:
+            driver.find_element_by_name('name')
+        except NoSuchElementException:
+            flow_test = False
+        driver.find_element_by_link_text('Create Listing').click()
+        driver.implicitly_wait(3)
+        try:
+            driver.find_element_by_name('item').click()
+        except NoSuchElementException:
+            flow_test = False
+        driver.find_element_by_link_text('Create Textbook').click()
+        driver.implicitly_wait(3)
+        try:
+            driver.find_element_by_name('title').click()
+        except NoSuchElementException:
+            flow_test = False
+        self.assertTrue(flow_test)
 
     def tearDown(self):
         self.driver.close()
