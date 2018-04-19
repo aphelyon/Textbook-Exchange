@@ -8,6 +8,7 @@ services:
 before_install:
  - docker pull tp33/django
  - docker pull mysql:5.7.17
+ - pip install selenium==3.11.0
  - mkdir db
  - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v `pwd`/db:/var/lib/mysql  mysql:5.7.17
  - sleep 20
@@ -19,7 +20,8 @@ before_script:
  
 script:
   -  docker exec -it cs4501textbookexchange_models_1 bash -c "bash ./tests.sh"
-  -  docker exec -it selenium-test bash -c "bash ./tests.sh"
+  -  python app/selenium/Selenium.py
+  
 after_script:
  - docker-compose -f ./docker-compose_TRAVIS.yml stop
  - docker-compose -f ./docker-compose_TRAVIS.yml -f
