@@ -1,0 +1,122 @@
+[
+{
+  "model": "myapp.user",
+  "pk": 1,
+  "fields": {
+    "first_name": "Michael",
+    "last_name": "Chang",
+    "username": "mhc6kp",
+    "password": "safepassword",
+    "email": "mhc6kp@virginia.edu",
+    "userJoined": "2018-02-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.user",
+  "pk": 2,
+  "fields": {
+    "first_name": "Hunter",
+    "last_name": "Murphy",
+    "username": "bhm5zr",
+    "password": "saferpassword",
+    "email": "bhm5zr@virginia.edu",
+    "userJoined": "2018-02-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.user",
+  "pk": 3,
+  "fields": {
+    "first_name": "Siteng",
+    "last_name": "Zhang",
+    "username": "sz4dd",
+    "password": "safestpassword",
+    "email": "sz4dd@virginia.edu",
+    "userJoined": "2018-02-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.user",
+  "pk": 4,
+  "fields": {
+    "first_name": "Tyler",
+    "last_name": "Handley",
+    "username": "tmh6de",
+    "password": "pbkdf2_sha256$30000$DKW9njQVXf2i$waVViPlC0Hg866wHOVwlK5ZNQ61y3Ohty2s88+12ao8=",
+    "email": "tmh6de@virginia.edu",
+    "userJoined": "2018-03-19T00:00:00Z"
+  }
+},
+{
+  "model": "myapp.professor",
+  "pk": 2,
+  "fields": {
+    "name": "Thomas Pinckney",
+    "email": "tp3ks@virginia.edu"
+  }
+},
+{
+  "model": "myapp.professor",
+  "pk": 3,
+  "fields": {
+    "name": "Mark Floryan",
+    "email": "mfloryan@cs.virginia.edu"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 1,
+  "fields": {
+    "identifier": "CS 2150",
+    "department": "Computer Science",
+    "professor": 3,
+    "name": "Program and Data Representation"
+  }
+},
+{
+  "model": "myapp.course",
+  "pk": 2,
+  "fields": {
+    "identifier": "APMA 3100",
+    "department": "Applied Mathematics",
+    "professor": null,
+    "name": "Linear Algebra"
+  }
+},
+{
+  "model": "myapp.textbook",
+  "pk": 1,
+  "fields": {
+    "item_title": "Hitchikers Guide to the Galaxy",
+    "item_author": "Douglass Adams",
+    "course": 1,
+    "item_ISBN": "123456789",
+    "pub_date": "1979-10-12"
+  }
+},
+{
+  "model": "myapp.textbook",
+  "pk": 2,
+  "fields": {
+    "item_title": "What If?",
+    "item_author": "Randall Munroe",
+    "course": null,
+    "item_ISBN": "987654321",
+    "pub_date": "2014-09-02"
+  }
+},
+{
+  "model": "myapp.listing",
+  "pk": 1,
+  "fields": {
+    "item": 2,
+    "price_text": "1,000.50",
+    "actualprice": 1000.5,
+    "user": 2,
+    "condition": "NEW",
+    "status": "Negotiation",
+    "viewed_count": 0,
+    "time_created": "2018-03-12T00:23:12.490Z"
+  }
+}
+]
