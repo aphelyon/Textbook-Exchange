@@ -10,6 +10,7 @@ before_install:
  - docker pull mysql:5.7.17
  - sudo pip install --upgrade pip
  - sudo pip install selenium==3.11.0
+ - sudo pip install django
  - mkdir db
  - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v `pwd`/db:/var/lib/mysql  mysql:5.7.17
  - sleep 20
