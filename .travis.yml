@@ -23,7 +23,7 @@ before_script:
  
 script:
   -  docker exec -it cs4501textbookexchange_models_1 bash -c "bash ./tests.sh"
-  -  python selenium/Selenium.py
+  -  python app/selenium/Selenium.py
   
 after_script:
  - docker-compose -f ./docker-compose_TRAVIS.yml stop
