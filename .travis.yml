@@ -9,7 +9,6 @@ before_install:
  - docker pull tp33/django
  - docker pull mysql:5.7.17
  - docker pull haproxy
- - docker pull selenium/standalone-chrome
  - mkdir db
  - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v `pwd`/db:/var/lib/mysql  mysql:5.7.17
  - sleep 20
