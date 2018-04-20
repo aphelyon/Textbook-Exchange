@@ -22,7 +22,7 @@ before_script:
  
 script:
   -  docker exec -it cs4501textbookexchange_models_1 bash -c "bash ./tests.sh"
-  -  docker exec -it selenium-chrome bash -c "python Selenium.py"
+  -  docker exec -it selenium-chrome bash -c "bash ./tests.sh"
   
 after_script:
  - docker-compose -f ./docker-compose_TRAVIS.yml stop
