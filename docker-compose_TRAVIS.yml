@@ -20,6 +20,16 @@ exp:
       - ./app/experience:/app
     command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./experience/wsgi.py"
 
+web:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    expose:
+      - "8000"
+    volumes:
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+    
 kafka:
    image: spotify/kafka
    container_name: kafka
