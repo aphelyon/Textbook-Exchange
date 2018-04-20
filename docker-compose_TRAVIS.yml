@@ -124,7 +124,7 @@ selenium-test:
     - selenium-chrome:selenium-chrome
     - web:web
   volumes:
-    - ./app/selenium:/app
+    - ./app/selenium
   command: bash -c "pip install selenium==3.11.0 && python Selenium.py"
 
 haproxy:
