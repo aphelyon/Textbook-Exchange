@@ -15,7 +15,7 @@ before_install:
  - sleep 20
  - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.17 mysql -uroot -p'$3cureUS' -h db -e "CREATE USER 'www'@'%' IDENTIFIED BY '\$3cureUS'; CREATE DATABASE cs4501 CHARACTER SET utf8; GRANT ALL PRIVILEGES ON *.* TO 'www'@'%';"
  - docker rm mysql-cmdline
- - sudo docker build -t my-haproxy .
+
  
 before_script:
  - docker-compose -f ./docker-compose_TRAVIS.yml up -d
