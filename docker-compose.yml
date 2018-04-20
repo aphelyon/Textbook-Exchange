@@ -4,8 +4,8 @@ models:
       -  mysql:db
     volumes:
       - ./app/textbookexchange:/app
-    ports:
-      - "8001:8000"
+    #ports:
+     # - "8001:8000"
     command: bash -c "python manage.py makemigrations myapp && python manage.py makemigrations && python manage.py migrate && python manage.py loaddata dbWithMoreStuff.json && mod_wsgi-express start-server --working-directory . --reload-on-changes ./textbookexchange/wsgi.py"
 
 exp:
@@ -14,8 +14,8 @@ exp:
       - models:models-api
       - kafka:kafka
       - es:es
-    ports:
-      - "8002:8000"
+    #ports:
+     # - "8002:8000"
     volumes:
       - ./app/experience:/app
     command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./experience/wsgi.py"
@@ -24,11 +24,63 @@ web:
     image: tp33/django
     links:
       - exp:exp-api
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     volumes:
       - ./app/web:/app
     command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+
+web2:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    expose:
+      - "8000"
+    volumes:
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+
+web3:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    expose:
+      - "8000"
+    volumes:
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+
+web4:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    expose:
+      - "8000"
+    volumes:
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+
+
+web5:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    expose:
+      - "8000"
+    volumes:
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+
+web6:
+    image: tp33/django
+    links:
+      - exp:exp-api
+    expose:
+      - "8000"
+    volumes:
+      - ./app/web:/app
+    command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./web/wsgi.py"
+
 
 kafka:
    image: spotify/kafka
@@ -74,3 +126,17 @@ selenium-test:
   volumes:
     - ./app/selenium:/app
   command: bash -c "pip install selenium==3.11.0 && python Selenium.py"
+
+haproxy:
+   image: my-haproxy
+   links:
+     - web:web
+     - web2:web2
+     - web3:web3
+     - web4:web4
+     - web5:web5
+     - web6:web6
+  # volumes:
+   #  - /var/run/docker.sock:/var/run/docker.sock
+   ports:
+     - "80:80"
