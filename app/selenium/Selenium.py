@@ -20,11 +20,11 @@ class SeleniumTest(unittest.TestCase):
     def test_search_in_python_org(self):
         driver = self.driver
         #gets the digital ocean homepage for our project
-        driver.get("http://165.227.202.249:8000")
+        driver.get("http://165.227.202.249:80")
         #check if the get is successful
         self.assertIn("Textbook Exchange", driver.title)
         #get the login page
-        driver.get("http://165.227.202.249:8000/login")
+        driver.get("http://165.227.202.249:80/login")
         cookies = driver.get_cookies()
         login_status = False
         for cookie in cookies:
@@ -49,7 +49,7 @@ class SeleniumTest(unittest.TestCase):
         #if auth cookie exist, then that means login is successful.
         self.assertTrue(login_status2)
         #go to listing page, if not logged in it should go back to login page
-        driver.get("http://165.227.202.249:8000/listing")
+        driver.get("http://165.227.202.249:80/listing")
         #create listing
         priceElement = driver.find_element_by_name("price")
         priceElement.send_keys("239")
@@ -74,7 +74,7 @@ class SeleniumTest(unittest.TestCase):
             search_test = False
         self.assertTrue(search_test)
         #Below checks if create professor works
-        driver.get('http://165.227.202.249:8000/professor')
+        driver.get('http://165.227.202.249:80/professor')
         name = driver.find_element_by_name("name")
         email = driver.find_element_by_name('email')
         name.send_keys('myprof')
@@ -88,7 +88,7 @@ class SeleniumTest(unittest.TestCase):
             create_prof = False
         self.assertTrue(create_prof)
         #Below checks if you can create a course
-        driver.get('http://165.227.202.249:8000/course')
+        driver.get('http://165.227.202.249:80/course')
         name2 = driver.find_element_by_name("name")
         identifier = driver.find_element_by_name("identifier")
         department = driver.find_element_by_name("department")
@@ -104,7 +104,7 @@ class SeleniumTest(unittest.TestCase):
             create_course = False
         self.assertTrue(create_course)
         # Below check if you can create a textbook
-        driver.get('http://165.227.202.249:8000/textbook')
+        driver.get('http://165.227.202.249:80/textbook')
         title = driver.find_element_by_name('title')
         author = driver.find_element_by_name('author')
         ISBN = driver.find_element_by_name('isbn')
@@ -120,7 +120,7 @@ class SeleniumTest(unittest.TestCase):
             create_textbook = True
         self.assertTrue(create_textbook)
         #Below tests the flow of the program.
-        driver.get('http://165.227.202.249:8000')
+        driver.get('http://165.227.202.249:80')
         driver.find_element_by_link_text('My Listings').click()
         driver.implicitly_wait(3)
         flow_test = True
