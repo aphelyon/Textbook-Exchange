@@ -93,8 +93,8 @@ kafka:
 es:
    image: elasticsearch:2.0
    container_name: es
-   ports:
-      - "9200:9200"
+   #ports:
+    #  - "9200:9200"
 
 batch:
    image: tp33/django
@@ -114,8 +114,8 @@ selenium-chrome:
   container_name: selenium-chrome
   links:
     - web:web
-  ports:
-    - "4444:4444"
+  #ports:
+   # - "4444:4444"
 
 selenium-test:
   image: tp33/django
