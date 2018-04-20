@@ -47,7 +47,7 @@ class SeleniumTest(unittest.TestCase):
                 login_status2 = True
                 break
         #if auth cookie exist, then that means login is successful.
-        self.assertFalse(login_status2)
+        self.assertTrue(login_status2)
         #go to listing page, if not logged in it should go back to login page
         driver.get("http://165.227.202.249:80/listing")
         #create listing
