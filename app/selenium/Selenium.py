@@ -125,7 +125,7 @@ class SeleniumTest(unittest.TestCase):
         driver.implicitly_wait(3)
         flow_test = True
         try:
-            driver.find_element_by_link_text("What If? ($9)")
+            driver.find_element_by_link_text("Hitchikers Guide to the Galaxy ($239)")
         except NoSuchElementException:
             flow_test = False
         driver.find_element_by_link_text('Professors').click()
@@ -153,6 +153,8 @@ class SeleniumTest(unittest.TestCase):
         except NoSuchElementException:
             flow_test = False
         self.assertTrue(flow_test)
+
+
 
     def tearDown(self):
         self.driver.close()
