@@ -5,7 +5,7 @@ from time import sleep
 from json import loads
 
 if __name__ == "__main__":
-    sleep(20)
+    sleep(60)
     print("Batch container starting")
     es = Elasticsearch(['es'])
     # If user searches before any listings are created, add the index just in case
