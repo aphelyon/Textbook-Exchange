@@ -19,7 +19,7 @@ class SeleniumTest(unittest.TestCase):
 
     def test_search_in_python_org(self):
         driver = self.driver
-        driver.implicitly_wait(30)
+        driver.implicitly_wait(60)
         #gets the digital ocean homepage for our project
         driver.get("http://165.227.202.249:80")
         #check if the get is successful
