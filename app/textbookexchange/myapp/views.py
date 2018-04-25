@@ -556,6 +556,15 @@ def delete_listing(request, pk):
         return error(request, "Requested Listing object does not exist")
 
 
+def detail_rectable(request):
+    try:
+        item_id = RecTable.objects.get(pk=pk)
+        response = item_id.as_json()
+        return success(request, response)
+    except RecTable.DoesNotExist:
+        return error(request, "Requested RecTable does not exist")
+
+
 # Ignore this for now, we're not using it
 def user_listings(request, pk):
     """Retrieve a json-formatted list of all listings related to a user denoted by pk"""
