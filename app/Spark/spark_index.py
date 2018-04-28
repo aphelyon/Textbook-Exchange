@@ -9,4 +9,7 @@ if __name__ == "__main__":
     
     while True:
         for message in consumer:
-            print(loads((message.value).decode('utf-8')))
+            with open('/tmp/data/access.log', 'a') as f:
+                message_dict = loads((message.value).decode('utf-8'))
+                f.write(message_dict['user_id'] + '\t' + message_dict['item_id'] + '\n')
+                print(message_dict)

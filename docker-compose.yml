@@ -116,6 +116,7 @@ spark_batch:
       - kafka:kafka
     volumes:
       - ./app/Spark:/app
+      - ./data:/tmp/data
     environment:
       - PYTHONUNBUFFERED=0
     command: bash -c "python spark_index.py"
