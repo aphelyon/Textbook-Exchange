@@ -19,15 +19,13 @@ def listing_view(request, pk):
     database_request = urllib.request.Request(database_request_url)
     # This is from the code in the write-up
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
-    authenticate_url = 'http://models-api:8000/api/v1/authenticators/check'
-    authenticate_data = urllib.parse.urlencode({'authenticator': request.POST.get('authenticator')}).encode('utf-8')
-    authenticate_request = urllib.request.Request(authenticate_url, authenticate_data)
-    authenticate_response = json.loads(urllib.request.urlopen(authenticate_request).read().decode('utf-8'))
-    if response['ok'] and authenticate_response['ok']:
+
+    # Don't log if the user is not logged in
+    if response['ok'] and 'user_id' in request.POST:
         producer = KafkaProducer(bootstrap_servers='kafka:9092')
-        user_view = {'item_id': response['results']['listing']['pk'], 'user_id': authenticate_data['pk']}
-        #idk how authenticate data is structured so needs change in user id for sure.
-        producer.send('new-recommendation-topic', json.dumps(user_view).encode('utf-8'))
+        user_view = {'item_id': response['results']['pk'], 'user_id': request.POST.get('user_id')}
+        producer.send('new-recommendations-topic', json.dumps(user_view).encode('utf-8'))
+
     return JsonResponse(response)
 
 

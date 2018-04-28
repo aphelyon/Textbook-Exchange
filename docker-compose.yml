@@ -14,8 +14,8 @@ exp:
       - models:models-api
       - kafka:kafka
       - es:es
-    #ports:
-     # - "8002:8000"
+    ports:
+      - "8002:8000"
     volumes:
       - ./app/experience:/app
     command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./experience/wsgi.py"
@@ -108,6 +108,17 @@ batch:
    environment:
       - PYTHONUNBUFFERED=0
    command: bash -c "python search_index.py"
+
+spark_batch:
+    image: tp33/django
+    container_name: spark_batch
+    links:
+      - kafka:kafka
+    volumes:
+      - ./app/Spark:/app
+    environment:
+      - PYTHONUNBUFFERED=0
+    command: bash -c "python spark_index.py"
    
 selenium-chrome:
   image: selenium/standalone-chrome
