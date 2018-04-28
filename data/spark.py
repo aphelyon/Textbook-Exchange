@@ -26,8 +26,18 @@ count = pages.reduceByKey(lambda x, y: int(x)+int(y))
 final_recommendation_pairs = count.filter(lambda x: x[1] >= 3)
 
 output = final_recommendation_pairs.collect()  # bring the data back to the master node so we can print it out
-for page_id, count in output:
-    print ("page_id1 %s page_id2 %d" % (page_id, count))
+
+dict_to_put_into_db = {}
+
+for pages, count in output:
+    if pages[0] not in dict_to_put_into_db:
+        dict_to_put_into_db[pages[0]] = []
+    dict_to_put_into_db[pages[0]].append(pages[1])
+    print ("pages %s count %d" % (pages, count))
 print ("Popular items done")
 
 sc.stop()
+
+# This prints out the dictionary of values that we will be putting into the db
+for key in dict_to_put_into_db:
+    print(key, dict_to_put_into_db[key])
