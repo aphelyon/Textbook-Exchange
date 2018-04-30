@@ -1,6 +1,13 @@
 from pyspark import SparkContext
 from itertools import permutations
 
+import _mysql
+
+db=_mysql.connect("db", "www", "$3cureUS", "cs4501") #connects us to the database
+db.query("TRUNCATE table myapp_rectable") #reset/clears our table for recommendations
+
+#db.query("") #this is what does our mysql commands
+
 sc = SparkContext("spark://spark-master:7077", "PopularItems")
 
 data = sc.textFile("/tmp/data/access.log", 2)     # each worker loads a piece of the data file
