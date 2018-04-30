@@ -95,8 +95,8 @@ class Authenticator(models.Model):
 
 
 class RecTable(models.Model):
-    item_id = models.CharField(max_length=200)
-    recommended_items = models.TextField()
+    item_id = models.CharField(max_length=200, primary_key=True)
+    recommended_items = models.CharField(max_length=1000)
 
     def as_json(self):
         return dict(item_id=self.item_id, pk=str(self.pk), recommended_items = self.recommended_items)

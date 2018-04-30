@@ -1,10 +1,11 @@
 from pyspark import SparkContext
 from itertools import permutations
 
-import _mysql
+import MySQLdb
 
-db=_mysql.connect("db", "www", "$3cureUS", "cs4501") #connects us to the database
-db.query("TRUNCATE table myapp_rectable") #reset/clears our table for recommendations
+db=MySQLdb.connect("db", "www", "$3cureUS", "cs4501") #connects us to the database
+cursor = db.cursor()
+cursor.execute("""TRUNCATE table myapp_rectable""") #reset/clears our table for recommendations
 
 #db.query("") #this is what does our mysql commands
 
@@ -43,8 +44,14 @@ for pages, count in output:
     print ("pages %s count %d" % (pages, count))
 print ("Popular items done")
 
+for key in dict_to_put_into_db:
+    list = ""
+    for item in range(len(dict_to_put_into_db[key]) - 1):
+        list += dict_to_put_into_db[key][item] + ", "
+    list += dict_to_put_into_db[key][len(dict_to_put_into_db[key]) - 1]
+    cursor.execute("INSERT INTO myapp_rectable (`item_id`, `recommended_items`) VALUES (%s, %s);", (key, list))
+    db.commit()
+    db.close
 sc.stop()
 
 # This prints out the dictionary of values that we will be putting into the db
-for key in dict_to_put_into_db:
-    print(key, dict_to_put_into_db[key])
