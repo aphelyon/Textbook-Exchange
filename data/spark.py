@@ -49,7 +49,7 @@ for key in dict_to_put_into_db:
     for item in range(len(dict_to_put_into_db[key]) - 1):
         list += dict_to_put_into_db[key][item] + ", "
     list += dict_to_put_into_db[key][len(dict_to_put_into_db[key]) - 1]
-    cursor.execute("INSERT INTO myapp_rectable (`item_id`, `recommended_items`) VALUES (%s, %s);", (key, list))
+    cursor.execute("""INSERT INTO myapp_rectable (`item_id`, `recommended_items`) VALUES (%s, %s);""", (key, list))
     db.commit()
     db.close
 sc.stop()
