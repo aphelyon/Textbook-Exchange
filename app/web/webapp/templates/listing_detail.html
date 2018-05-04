@@ -15,6 +15,16 @@
         <p><strong>Book Condition: </strong>{{ results.condition }}</p>
         <p><strong>ISBN: </strong>{{ results.item.ISBN }}</p>
         <p>You're the <em>{{ results.viewed_count|ordinal }}</em> person to view this listing.</p>
+        {% if results.recommended_flag %}
+
+            <h2>Recommended Items</h2>
+                <ul>
+                    {% for listing in results.recommendations %}
+                        <li><a href="{% url 'webapp:listing' pk=listing.results.pk %}">{{ listing.results.item.title }} (${{ listing.results.actualprice }})</a>
+                        <ul><li>Seller: <a href="{% url 'webapp:listing' pk=listing.results.user.pk %}">{{ listing.results.user.username}}</a></li></ul></li>
+                    {% endfor %}
+                </ul>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

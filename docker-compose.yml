@@ -14,8 +14,8 @@ exp:
       - models:models-api
       - kafka:kafka
       - es:es
-    ports:
-      - "8002:8000"
+    #ports:
+     #- "8002:8000"
     volumes:
       - ./app/experience:/app
     command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./experience/wsgi.py"

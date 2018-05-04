@@ -22,6 +22,15 @@ def success(request, resp=None):
     else:
         return JsonResponse({'ok': True})
 
+def details_recommendations(request, pk):
+    try:
+        recommendations = RecTable.objects.get(pk=pk)
+        response = recommendations.as_json()
+        return success(request, response)
+    except RecTable.DoesNotExist:
+        return error(request, "Requested Listing object does not exist")
+
+
 def details_user(request, pk):
     try:
         user = User.objects.get(pk=pk)
