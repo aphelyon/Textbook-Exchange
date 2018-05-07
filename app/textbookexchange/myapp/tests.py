@@ -970,3 +970,23 @@ class get_all(TestCase):
 
     def tearDown(self):
         pass
+
+
+class test_recommendations(TestCase):
+    fixtures = ['myapp/fixtures/db.json', ]
+
+    def setUp(self):
+        pass
+
+    def test_normal_output(self):
+        jsonObject = get('/api/v1/recommendations/5')
+        self.assertTrue(jsonObject['ok'])
+        self.assertEqual(jsonObject['results']['recommended_items'], "9, 3, 2")
+        self.assertFalse('1' in jsonObject['results']['recommended_items'])
+
+    def test_error(self):
+        jsonObject = get('/api/v1/recommendations/1')
+        self.assertFalse(jsonObject['ok'])
+
+    def tearDown(self):
+        pass

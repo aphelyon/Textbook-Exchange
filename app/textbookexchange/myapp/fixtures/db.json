@@ -114,7 +114,38 @@
     "actualprice": 1000.5,
     "user": 2,
     "condition": "NEW",
-    "status": "Negotiation"
+    "status": "Negotiation",
+    "viewed_count": 0,
+    "time_created": "2018-03-12T00:23:12.490Z"
+  }
+},
+{
+  "model": "myapp.rectable",
+  "pk": "2",
+  "fields": {
+    "recommended_items": "5"
+  }
+},
+{
+  "model": "myapp.rectable",
+  "pk": "3",
+  "fields": {
+    "recommended_items": "5"
+  }
+},
+{
+  "model": "myapp.rectable",
+  "pk": "5",
+  "fields": {
+    "recommended_items": "9, 3, 2"
+  }
+},
+{
+  "model": "myapp.rectable",
+  "pk": "9",
+  "fields": {
+    "recommended_items": "5"
   }
 }
+
 ]
