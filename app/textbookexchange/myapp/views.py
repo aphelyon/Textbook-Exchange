@@ -22,6 +22,15 @@ def success(request, resp=None):
     else:
         return JsonResponse({'ok': True})
 
+def details_recommendations(request, pk):
+    try:
+        recommendations = RecTable.objects.get(pk=pk)
+        response = recommendations.as_json()
+        return success(request, response)
+    except RecTable.DoesNotExist:
+        return error(request, "Requested Listing object does not exist")
+
+
 def details_user(request, pk):
     try:
         user = User.objects.get(pk=pk)
@@ -554,6 +563,15 @@ def delete_listing(request, pk):
         return success(request, {"Status": "200"})
     except Listing.DoesNotExist:
         return error(request, "Requested Listing object does not exist")
+
+
+def detail_rectable(request):
+    try:
+        item_id = RecTable.objects.get(pk=pk)
+        response = item_id.as_json()
+        return success(request, response)
+    except RecTable.DoesNotExist:
+        return error(request, "Requested RecTable does not exist")
 
 
 # Ignore this for now, we're not using it

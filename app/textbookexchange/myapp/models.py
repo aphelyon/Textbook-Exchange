@@ -92,3 +92,11 @@ class Authenticator(models.Model):
 
     def as_json(self):
         return dict(user_id=self.user_id.pk, authenticator=self.authenticator, date_created=self.date_created)
+
+
+class RecTable(models.Model):
+    item_id = models.CharField(max_length=200, primary_key=True)
+    recommended_items = models.CharField(max_length=1000)
+
+    def as_json(self):
+        return dict(item_id=self.item_id, pk=str(self.pk), recommended_items = self.recommended_items)

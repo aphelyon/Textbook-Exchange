@@ -20,8 +20,17 @@ def index(request):
 
 def listing_view(request, pk):
     """Right now, this just returns the details of a listing and nothing else"""
+    auth = request.COOKIES.get('auth')
+
     request_url = 'http://exp-api:8000/experience/listings/' + str(pk)
-    experience_request = urllib.request.Request(request_url)
+    # If there is a user logged in, then we log their interactions
+    if auth:
+        auth = literal_eval(auth.replace('&', ','))
+        data = urllib.parse.urlencode({'user_id': auth['user_id']}).encode('utf-8')
+        experience_request = urllib.request.Request(request_url, data)
+    else:
+        experience_request = urllib.request.Request(request_url)
+
     # This is from the code in the write-up
     listing_details = json.loads(urllib.request.urlopen(experience_request).read().decode('utf-8'))
     # Set up our date to be a datetime object, so that it will actually look pretty to the user

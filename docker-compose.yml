@@ -15,7 +15,7 @@ exp:
       - kafka:kafka
       - es:es
     #ports:
-     # - "8002:8000"
+     #- "8002:8000"
     volumes:
       - ./app/experience:/app
     command: bash -c "mod_wsgi-express start-server --working-directory . --reload-on-changes ./experience/wsgi.py"
@@ -108,25 +108,19 @@ batch:
    environment:
       - PYTHONUNBUFFERED=0
    command: bash -c "python search_index.py"
+
+spark_batch:
+    image: tp33/django
+    container_name: spark_batch
+    links:
+      - kafka:kafka
+    volumes:
+      - ./app/Spark:/app
+      - ./data:/tmp/data
+    environment:
+      - PYTHONUNBUFFERED=0
+    command: bash -c "python spark_index.py"
    
-selenium-chrome:
-  image: selenium/standalone-chrome
-  container_name: selenium-chrome
-  links:
-    - web:web
-  #ports:
-   # - "4444:4444"
-
-selenium-test:
-  image: tp33/django
-  container_name: selenium-test
-  links:
-    - selenium-chrome:selenium-chrome
-    - web:web
-  volumes:
-    - ./app/selenium:/app
-  command: bash -c "pip install selenium==3.11.0 && python Selenium.py && python forever.py"
-
 haproxy:
    image: my-haproxy
    links:
@@ -140,3 +134,57 @@ haproxy:
    #  - /var/run/docker.sock:/var/run/docker.sock
    ports:
      - "80:80"
+
+spark-master:
+  image: gettyimages/spark
+  command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+  container_name: spark-master
+  hostname: spark-master
+  external_links:
+        -  mysql:db
+  environment:
+    MASTER: spark://spark-master:7077
+    SPARK_CONF_DIR: /conf
+  expose:
+    - 7001
+    - 7002
+    - 7003
+    - 7004
+    - 7005
+    - 7006
+    - 7077
+    - 6066
+  ports:
+    - 4040:4040
+    - 6066:6066
+    - 7077:7077
+    - 8080:8080
+  volumes:
+    - ./data:/tmp/data
+
+spark-worker:
+  image: gettyimages/spark
+  command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+  container_name: spark-worker
+  hostname: spark-worker
+  external_links:
+        -  mysql:db
+  environment:
+    SPARK_CONF_DIR: /conf
+    SPARK_WORKER_CORES: 2
+    SPARK_WORKER_MEMORY: 512m
+    SPARK_WORKER_PORT: 8881
+    SPARK_WORKER_WEBUI_PORT: 8081
+  links:
+    - spark-master
+  expose:
+    - 7012
+    - 7013
+    - 7014
+    - 7015
+    - 7016
+    - 8881
+  ports:
+    - 8081:8081
+  volumes:
+    - ./data:/tmp/data

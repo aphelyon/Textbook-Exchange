@@ -13,12 +13,35 @@ from elasticsearch import Elasticsearch
 def listing_view(request, pk):
     """Right now, this just returns the details of a listing, increments its count and nothing else"""
     increment_request_url = 'http://models-api:8000/api/v1/listings/' + str(pk) + '/incrementCount'
+    recommendations_request_url = 'http://models-api:8000/api/v1/recommendations/' + str(pk)
     database_request_url = 'http://models-api:8000/api/v1/listings/' + str(pk)
     # Request to increment the listing view count
     urllib.request.urlopen(urllib.request.Request(increment_request_url))
     database_request = urllib.request.Request(database_request_url)
+    recommendations_request = urllib.request.Request(recommendations_request_url)
     # This is from the code in the write-up
     response = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
+    response2 = json.loads(urllib.request.urlopen(recommendations_request).read().decode('utf-8'))
+
+    # Don't log if the user is not logged in
+    if response['ok'] and 'user_id' in request.POST:
+        producer = KafkaProducer(bootstrap_servers='kafka:9092')
+        user_view = {'item_id': response['results']['pk'], 'user_id': request.POST.get('user_id')}
+        producer.send('new-recommendations-topic', json.dumps(user_view).encode('utf-8'))
+
+    response['results']['recommended_flag'] = response2['ok']
+
+    if response2['ok']:
+        recommendations = []
+        response['results']['recommended_pk_list'] = response2['results']['recommended_items'].split(',')
+        for item in range(1, len(response['results']['recommended_pk_list'])):
+            response['results']['recommended_pk_list'][item] = response['results']['recommended_pk_list'][item][1:]
+        for listing_pk in response['results']['recommended_pk_list']:
+            database_request_url = 'http://models-api:8000/api/v1/listings/' + str(listing_pk)
+            database_request = urllib.request.Request(database_request_url)
+            response3 = json.loads(urllib.request.urlopen(database_request).read().decode('utf-8'))
+            recommendations.append(response3)
+        response['results']['recommendations'] = recommendations
     return JsonResponse(response)
 
 

@@ -50,3 +50,7 @@ urlpatterns += [
     url(r'^v1/listings/(?P<pk>[-\w]+)$', views.details_listing, name='get-listing-api'),
     url(r'^v1/listings/(?P<pk>[-\w]+)/delete$', views.delete_listing, name='delete-listing-api'),
 ]
+
+urlpatterns += [
+    url(r'^v1/recommendations/(?P<pk>[-\w]+)$', views.details_recommendations, name='get-listing-recommendations-api')
+]
